@@ -19,18 +19,23 @@ def main(urls: str) -> str:
     pl_add = M3UPlaylist()
     pl_new = M3UPlaylist()
     channel_list = list()
+    tmp_dict = dict()
 
     with open("channel_corrected.json", "r") as f:
         channel_dict = json.load(f)
 
     for url in urls.split(","):
         for channel in playlist.loadu(url.split()[0]).get_channels():
-            # add channel if not already in program list, first come, first
-            # served
+            # add channel if not in program list, first come, first served
+            tmp_dict.update({channel.name: {}})  # tmp dict for entire list
             if channel.name not in channel_list:
                 channel_list.append(channel.name)
                 pl_add.append_channel(channel)
     all_channels = pl_add.get_channels()
+    print(json.dumps(tmp_dict,
+                     ensure_ascii=False,
+                     indent=2))
+
     for item in all_channels:
         c = item.copy()
         try:
