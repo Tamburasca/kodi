@@ -6,9 +6,12 @@
 #docker build -t kodi_all:0.1 -f Dockerfile_alpine_all .
 
 # outside
-#docker run --env-file=.env -d -p 0.0.0.0:3002:3002 -p 0.0.0.0:3001:3000 --restart unless-stopped --name kodi_all kodi_all:0.1
+#docker run -d -p 0.0.0.0:3003:3003 -p 0.0.0.0:3001:3000 --restart unless-stopped --name kodi_all \
+##--add-host=host.docker.internal:host-gateway \
+#-v "$(pwd)"/src/epg_corrected.json:/iptv/iptv/src/epg_corrected.json kodi_all:0.1
 # locally
-#docker run --env-file=.env -d -p 127.0.0.1:3002:3002 -p 127.0.0.1:3001:3000 --restart unless-stopped --name kodi_all kodi_all:0.1
+##docker run -d -p 127.0.0.1:3003:3003 -p 127.0.0.1:3001:3000 --restart unless-stopped --name kodi_all \
+#-v "$(pwd)"/src/epg_corrected.json:/iptv/iptv/src/epg_corrected.json kodi_all:0.1
 
 # update guide regularly via
 # docker exec -w <working dir> <container id | name> npm run grab -- --site=<web site>, e.g.
@@ -20,14 +23,15 @@ FROM alpine:latest
 
 # iptv service
 WORKDIR /iptv/iptv/
-COPY src/* src/
+COPY src/*.py src/
 COPY requirements.txt .
 
 RUN apk update \
     && apk upgrade
 RUN apk add git \
     && apk add nodejs npm \
-    && apk add --update npm
+    && apk add --update npm \
+    && apk add --no-cache rust cargo
 RUN apk add py3-pip
 RUN pip install --upgrade pip\
     && pip install -r requirements.txt \

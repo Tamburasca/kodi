@@ -3,8 +3,7 @@
   "ZDF HD": {},
   "3sat": {},
   "ARTE HD": {
-    "name": "ARTE Deutsch",
-    "tvg-name": "ARTE Deutsch HD"
+    "name": "ARTE Deutsch"
   },
   "ServusTV HD": {},
   "ARD-alpha": {},
@@ -29,7 +28,9 @@
   "WDR Dortmund HD": {},
   "WDR Düsseldorf HD": {},
   "WDR Duisburg HD": {},
-  "WDR Köln HD": {},
+  "WDR Köln HD": {
+    "name": "WDR Fernsehen Köln"
+  },
   "WDR Münsterland HD": {},
   "WDR Ostwestfalen HD": {},
   "WDR Südwestfalen HD": {},
