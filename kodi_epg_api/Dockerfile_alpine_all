@@ -7,8 +7,8 @@
 
 # outside
 #docker run -d -p 0.0.0.0:3003:3003 -p 0.0.0.0:3001:3000 --restart unless-stopped --name kodi_all \
-##--add-host=host.docker.internal:host-gateway \
 #-v "$(pwd)"/src/epg_corrected.json:/iptv/iptv/src/epg_corrected.json kodi_all:0.1
+### --add-host=host.docker.internal:host-gateway \
 # locally
 ##docker run -d -p 127.0.0.1:3003:3003 -p 127.0.0.1:3001:3000 --restart unless-stopped --name kodi_all \
 #-v "$(pwd)"/src/epg_corrected.json:/iptv/iptv/src/epg_corrected.json kodi_all:0.1
@@ -47,8 +47,6 @@ WORKDIR /iptv/epg/
 ARG MAX_OLD_SPACE_SIZE=1024
 ENV NODE_OPTIONS="--max_old_space_size=${MAX_OLD_SPACE_SIZE}"
 RUN npm install
-
-ENV URL ${URL}
 
 # start the web server at
 # http://<intranet host name/ip address>:3001/guide.xml

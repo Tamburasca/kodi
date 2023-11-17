@@ -2,17 +2,27 @@ import requests
 from xml.etree import ElementTree as ET
 import json
 import argparse
-import os
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import Response
 import uvicorn
+
+__author__ = "Ralf Antonius Timmermann"
+__copyright__ = ("Copyright (C) Ralf Antonius Timmermann, "
+                 "AIfA, University Bonn")
+__credits__ = ""
+__license__ = "BSD 3-Clause"
+__version__ = "0.0.1"
+__maintainer__ = "Ralf Antonius Timmermann"
+__email__ = "rtimmermann@astro.uni-bonn.de"
+__status__ = "Dev"
+
+url = "http://localhost:3000/guide.xml"  # access inside docker container
 
 
 def main() -> str:
     with open("epg_corrected.json", "r") as f:
         channel_dict = json.load(f)
 
-    url = "http://localhost:3000/guide.xml"  # we are located inside docker
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -39,7 +49,7 @@ def main() -> str:
 
 app = FastAPI(
     title="EPG Api",
-#    version=__version__,
+    version=__version__,
     description="Ingests data from all URL provided and filters/corrects "
                 "channels as verified in a JSON file.",
 )
@@ -55,8 +65,11 @@ async def read() -> Response:
             content=main(),
             media_type="application/xml"
         )
-    except SystemExit:
-        raise HTTPException(status_code=503, detail="Resource Unavailable")
+    except SystemExit as e:
+        raise HTTPException(
+            status_code=503,
+            detail="Resource Unavailable: {}".format(str(e))
+        )
 
 argparser = argparse.ArgumentParser(
     description="Rest API for EPG client")
@@ -66,10 +79,9 @@ argparser.add_argument(
     required=False,
     type=int,
     help='Port (default: 3003)',
-    default=3003  # change run cpmmand appropriately
+    default=3003  # change docker run command appropriately
 )
-print("PID: {0}".format(os.getpid()))
-print("Port: {}".format(argparser.parse_args().port))
+print("Accepting requests on port: {}".format(argparser.parse_args().port))
 
 uvicorn.run(app,
             host='0.0.0.0',
