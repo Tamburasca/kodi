@@ -6,13 +6,13 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import Response
 import uvicorn
 
-__author__ = "Ralf Antonius Timmermann"
+__author__ = "Dr. Ralf Antonius Timmermann"
 __copyright__ = ("Copyright (C) Ralf Antonius Timmermann, "
                  "AIfA, University Bonn")
 __credits__ = ""
 __license__ = "BSD 3-Clause"
 __version__ = "0.0.1"
-__maintainer__ = "Ralf Antonius Timmermann"
+__maintainer__ = "Dr. Ralf Antonius Timmermann"
 __email__ = "rtimmermann@astro.uni-bonn.de"
 __status__ = "Dev"
 

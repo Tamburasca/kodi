@@ -1,10 +1,10 @@
 # Start the REST APIs
 cd /iptv/iptv/src/ || exit
-python3 -u epg_extractor.py --port 3003 &
+python3 -u epg_extractor.py &
 
 cd /iptv/epg/scripts/commands/epg/
 # must fill at least one site for method to show up!
-npm run grab -- --site=tv.blue.ch --maxConnections=10
+npm run grab -- --site=tv.blue.ch --maxConnections=2
 npm run serve &
 
 # Wait for any process to exit

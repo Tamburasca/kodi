@@ -48,8 +48,9 @@ ARG MAX_OLD_SPACE_SIZE=1024
 ENV NODE_OPTIONS="--max_old_space_size=${MAX_OLD_SPACE_SIZE}"
 RUN npm install
 
-# start the web server at
-# http://<intranet host name/ip address>:3001/guide.xml
-# http://<intranet host name/IP address>:3002/iptv/read
 WORKDIR /iptv/
+# web server at
+# http://<intranet host name/ip address>:3001/guide.xml
+# remapped at
+# http://<intranet host name/IP address>:3003/guide.xml
 CMD ./wrapper.sh
