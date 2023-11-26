@@ -1,0 +1,13 @@
+# Changelog
+## unreleased (2023-mm-dd)
+### Added
+### Changed
+### Fixed
+### Deprecated
+### Removed
+### Security
+## 0.0.2 (2023-11-26)
+### Added
+- merge EPG and IPTV app
+## 0.0.1 (2023-11-15)
+### Initial release

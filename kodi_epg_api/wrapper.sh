@@ -1,6 +1,6 @@
 # Start the REST APIs
 cd /iptv/iptv/src/ || exit
-python3 -u epg_extractor.py &
+python3 -u epg_extractor.py --iptv_url "$IPTV_URL" &
 
 cd /iptv/epg/scripts/commands/epg/
 # must fill at least one site for method to show up!

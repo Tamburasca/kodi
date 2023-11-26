@@ -7,12 +7,11 @@
 
 # outside
 #docker run -d -p 0.0.0.0:3003:3003 -p 0.0.0.0:3001:3000 --restart unless-stopped --name kodi_all \
-#-v "$(pwd)"/src/epg_corrected.json:/iptv/iptv/src/epg_corrected.json kodi_all:0.1
+#--env-file .env -v "$(pwd)"/src/data:/iptv/iptv/src/data kodi_all:0.1
 ##--add-host=host.docker.internal:host-gateway
 # locally
 ##docker run -d -p 127.0.0.1:3003:3003 -p 127.0.0.1:3001:3000 --restart unless-stopped --name kodi_all \
-#-v "$(pwd)"/src/epg_corrected.json:/iptv/iptv/src/epg_corrected.json kodi_all:0.1
-
+#--env-file .env -v "$(pwd)"/src/data:/iptv/iptv/src/data kodi_all:0.1
 # update guide regularly via
 # docker exec -w <working dir> <container id | name> npm run grab -- --site=<web site>, e.g.
 #docker exec -w /iptv/epg/scripts/commands/epg/ kodi_all npm run grab -- --site=chaines-tv.orange.fr
@@ -43,10 +42,12 @@ RUN ["chmod", "+x", "wrapper.sh"]
 RUN git clone --depth 1 -b master https://github.com/iptv-org/epg.git
 
 WORKDIR /iptv/epg/
-# 512 MiB on raspberry Pi 3 B
-ARG MAX_OLD_SPACE_SIZE=512
+# 1024 MiB on raspberry Pi 4
+ARG MAX_OLD_SPACE_SIZE=1024
 ENV NODE_OPTIONS="--max_old_space_size=${MAX_OLD_SPACE_SIZE}"
 RUN npm install
+
+ENV IPTV_URL=$IPTV_URL
 
 WORKDIR /iptv/
 # web server at

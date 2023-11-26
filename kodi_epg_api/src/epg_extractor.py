@@ -1,41 +1,141 @@
+#!/usr/bin/env python3
+
+from ipytv import playlist
+from ipytv.playlist import M3UPlaylist
+from ipytv.channel import IPTVAttr
+from ipytv.exceptions import MalformedPlaylistException
 import requests
 from xml.etree import ElementTree as ET
 import json
 import argparse
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import Response
+from fastapi.responses import Response, PlainTextResponse
 import uvicorn
+import logging
 
 __author__ = "Dr. Ralf Antonius Timmermann"
 __copyright__ = ("Copyright (C) Ralf Antonius Timmermann, "
                  "AIfA, University Bonn")
 __credits__ = ""
 __license__ = "BSD 3-Clause"
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __maintainer__ = "Dr. Ralf Antonius Timmermann"
 __email__ = "rtimmermann@astro.uni-bonn.de"
-__status__ = "Dev"
+__status__ = "QA"
 
-url = "http://localhost:3000/guide.xml"  # access inside docker container
+myformat = ("%(asctime)s.%(msecs)03d :: %(levelname)s: %(filename)s - "
+            "%(lineno)s - %(funcName)s()\t%(message)s")
+logging.basicConfig(format=myformat,
+                    level=logging.INFO,
+                    datefmt="%Y-%m-%d %H:%M:%S")
+# suppress logs from ipytv module
+logging.getLogger("ipytv").setLevel(logging.WARNING)
+
+url_epg = "http://localhost:3000/guide.xml"  # from inside docker container
 
 
-def main() -> str:
-    with open("epg_corrected.json", "r") as f:
+class MyException(Exception):
+    def __init__(
+            self,
+            status_code,
+            detail
+    ):
+        super().__init__(
+            status_code,
+            detail
+        )
+        self.status_code: int = status_code
+        self.detail: str = detail
+
+
+def get_iptv(
+        urls: str,
+        filtered: bool = True
+) -> str:
+
+    pl_add, pl_new = M3UPlaylist(), M3UPlaylist()
+    channel_list = list()
+    tmp_dict = dict()
+
+    with open("data/iptv_corrected.json", "r") as f:
         channel_dict = json.load(f)
 
     try:
-        response = requests.get(url)
+        for url in urls.split(","):
+            for channel in playlist.loadu(url.split()[0]).get_channels():
+                # add channel if not in program list, first come, first served
+                tmp_dict.update({channel.name: {}})  # tmp dict for entire list
+                if channel.name not in channel_list:
+                    channel_list.append(channel.name)
+                    pl_add.append_channel(channel)
+        all_channels = pl_add.get_channels()
+    except (AttributeError, IndexError) as e:
+        raise MyException(
+            status_code=400,
+            detail=str(e)
+        )
+    except MalformedPlaylistException as e:
+        raise MyException(
+            status_code=500,
+            detail=str(e)
+        )
+    logging.info("{} channels read from IPTV source.".format(len(tmp_dict)))
+    logging.debug(json.dumps(tmp_dict,
+                             ensure_ascii=False,
+                             indent=2))
+
+    for item in all_channels:
+        c = item.copy()
+        try:
+            new_a = channel_dict[c.name]
+        except KeyError:
+            continue
+        # fetch values, otherwise None
+        if new_a.get("name"):
+            c.name = new_a.get("name")
+        if new_a.get("extras"):
+            c.extras = new_a.get("extras")
+        if new_a.get("tvg-name"):
+            c.attributes[IPTVAttr.TVG_NAME.value] = new_a.get("tvg-name")
+        if new_a.get("tvg-id"):
+            c.attributes[IPTVAttr.TVG_ID.value] = new_a.get("tvg-id")
+        if new_a.get("group-title"):
+            c.attributes[IPTVAttr.GROUP_TITLE.value] = new_a.get("group-title")
+        if new_a.get("tvg-shift"):
+            c.attributes[IPTVAttr.TVG_SHIFT.value] = new_a.get("tvg-shift")
+        if new_a.get("tvg_chno"):
+            c.attributes[IPTVAttr.TVG_CHNO.value] = new_a.get("tvg_chno")
+
+        pl_new.append_channel(c)
+
+    logging.info("{} channels selected from IPTV sources."
+                 .format(pl_new.length()))
+
+    return pl_new.to_m3u_plus_playlist() if filtered \
+        else pl_add.to_m3u_plus_playlist()
+
+
+def get_guide() -> str:
+
+    with open("data/epg_corrected.json", "r") as f:
+        channel_dict = json.load(f)
+
+    try:
+        response = requests.get(url_epg)
         response.raise_for_status()
     except (
             requests.exceptions.HTTPError,
             requests.exceptions.ConnectionError
-    ) as err:
-        raise SystemExit(err)
+    ) as e:
+        raise MyException(
+            status_code=503,
+            detail=e
+        )
     tree = ET.fromstring(response.content)
     for channel in tree.findall('channel'):
         for display_name in channel.findall("display-name"):
             try:
-                display_name.text = channel_dict[display_name.text]
+                display_name.text = channel_dict[display_name.text]  # remap
             except KeyError:
                 pass
 
@@ -48,41 +148,84 @@ def main() -> str:
 
 
 app = FastAPI(
-    title="EPG Api",
+    title="Kodi Web REST API",
     version=__version__,
-    description="Ingests data from all URL provided and filters/corrects "
-                "channels as verified in a JSON file.",
+    description="API to process IPTV and EPG data",
 )
 
 
 @app.get(
     "/guide.xml",
-    summary="Outputs a corrected epg response in xml format"
+    summary="Outputs a corrected EPG response in xml format"
 )
-async def read() -> Response:
+async def epg() -> Response:
     try:
         return Response(
-            content=main(),
+            content=get_guide(),
             media_type="application/xml"
         )
-    except SystemExit as e:
+    except MyException as e:
         raise HTTPException(
-            status_code=503,
-            detail="Resource Unavailable: {}".format(str(e))
+            status_code=e.status_code,
+            detail="Resource Unavailable: {}".format(e)
         )
+
+
+@app.get(
+    "/iptv/read",
+    summary="Filtered & corrected list of channels with response type in "
+            "M3U format",
+    response_class=PlainTextResponse
+)
+async def read() -> PlainTextResponse:
+    try:
+        return get_iptv(
+            urls=argparser.parse_args().iptv_url,
+            filtered=True
+        )
+    except MyException as e:
+        raise HTTPException(
+            status_code=e.status_code,
+            detail=e.detail)
+
+
+@app.get(
+    "/iptv/unfiltered",
+    summary="Unfiltered list of channels with response type in M3U format",
+    response_class=PlainTextResponse
+)
+async def unfiltered() -> PlainTextResponse:
+    try:
+        return get_iptv(
+            urls=argparser.parse_args().iptv_url,
+            filtered=False
+        )
+    except MyException as e:
+        raise HTTPException(
+            status_code=e.status_code,
+            detail=e.detail)
+
 
 argparser = argparse.ArgumentParser(
     description="Rest API for EPG client")
 
 argparser.add_argument(
-    '--port',
+    '--api_port',
     required=False,
     type=int,
     help='Port (default: 3003)',
     default=3003  # change docker run command appropriately
 )
-print("Accepting requests on port: {}".format(argparser.parse_args().port))
+argparser.add_argument(
+    '--iptv_url',
+    required=False,
+    type=str,
+    help='url of iptv providers (separated by comma)'
+)
+
+logging.info("Accepting requests on port: {}"
+             .format(argparser.parse_args().api_port))
 
 uvicorn.run(app,
             host='0.0.0.0',
-            port=argparser.parse_args().port)
+            port=argparser.parse_args().api_port)
