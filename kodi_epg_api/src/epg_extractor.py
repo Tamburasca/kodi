@@ -10,6 +10,7 @@ import json
 import argparse
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import Response, PlainTextResponse
+from fastapi import status
 import uvicorn
 import logging
 
@@ -24,7 +25,7 @@ __email__ = "rtimmermann@astro.uni-bonn.de"
 __status__ = "QA"
 
 myformat = ("%(asctime)s.%(msecs)03d :: %(levelname)s: %(filename)s - "
-            "%(lineno)s - %(funcName)s()\t%(message)s")
+            "line %(lineno)s - function: %(funcName)s() :: %(message)s")
 logging.basicConfig(format=myformat,
                     level=logging.INFO,
                     datefmt="%Y-%m-%d %H:%M:%S")
@@ -48,10 +49,20 @@ class MyException(Exception):
         self.detail: str = detail
 
 
+def logging_debug(debug) -> None:
+    if debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+        for _, log_obj in logging.Logger.manager.loggerDict.items():
+            log_obj.disabled = True
+
+
 def get_iptv(
         urls: str,
-        filtered: bool = True
+        filtered: bool,
+        debug: bool
 ) -> str:
+
+    logging_debug(debug=debug)
 
     pl_add, pl_new = M3UPlaylist(), M3UPlaylist()
     channel_list = list()
@@ -71,18 +82,18 @@ def get_iptv(
         all_channels = pl_add.get_channels()
     except (AttributeError, IndexError) as e:
         raise MyException(
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
         )
     except MalformedPlaylistException as e:
         raise MyException(
-            status_code=500,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e)
         )
     logging.info("{} channels read from IPTV source.".format(len(tmp_dict)))
-    logging.debug(json.dumps(tmp_dict,
-                             ensure_ascii=False,
-                             indent=2))
+    logging.debug("\n" + json.dumps(tmp_dict,
+                                    ensure_ascii=False,
+                                    indent=2))
 
     for item in all_channels:
         c = item.copy()
@@ -115,7 +126,9 @@ def get_iptv(
         else pl_add.to_m3u_plus_playlist()
 
 
-def get_guide() -> str:
+def get_guide(debug: bool) -> str:
+
+    logging_debug(debug=debug)
 
     with open("data/epg_corrected.json", "r") as f:
         channel_dict = json.load(f)
@@ -125,11 +138,12 @@ def get_guide() -> str:
         response.raise_for_status()
     except (
             requests.exceptions.HTTPError,
-            requests.exceptions.ConnectionError
+            requests.exceptions.ConnectionError,
+            ConnectionRefusedError
     ) as e:
         raise MyException(
-            status_code=503,
-            detail=e
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=str(e)
         )
     tree = ET.fromstring(response.content)
     for channel in tree.findall('channel'):
@@ -161,8 +175,8 @@ app = FastAPI(
 async def epg() -> Response:
     try:
         return Response(
-            content=get_guide(),
-            media_type="application/xml"
+            content=get_guide(debug=argparser.parse_args().debug),
+            media_type="application/xml",
         )
     except MyException as e:
         raise HTTPException(
@@ -181,7 +195,8 @@ async def read() -> PlainTextResponse:
     try:
         return get_iptv(
             urls=argparser.parse_args().iptv_url,
-            filtered=True
+            filtered=True,
+            debug=argparser.parse_args().debug
         )
     except MyException as e:
         raise HTTPException(
@@ -198,7 +213,8 @@ async def unfiltered() -> PlainTextResponse:
     try:
         return get_iptv(
             urls=argparser.parse_args().iptv_url,
-            filtered=False
+            filtered=False,
+            debug=argparser.parse_args().debug
         )
     except MyException as e:
         raise HTTPException(
@@ -207,7 +223,7 @@ async def unfiltered() -> PlainTextResponse:
 
 
 argparser = argparse.ArgumentParser(
-    description="Rest API for EPG client")
+    description="Rest API for IPTV & EPG client")
 
 argparser.add_argument(
     '--api_port',
@@ -222,8 +238,14 @@ argparser.add_argument(
     type=str,
     help='url of iptv providers (separated by comma)'
 )
+argparser.add_argument(
+    '--debug',
+    required=False,
+    help='Debug Mode (default: False)',
+    action="store_true"
+)
 
-logging.info("Accepting requests on port: {}"
+logging.info("Accepting requests on port {}"
              .format(argparser.parse_args().api_port))
 
 uvicorn.run(app,

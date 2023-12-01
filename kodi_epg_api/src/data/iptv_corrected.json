@@ -5,12 +5,18 @@
   "ARTE HD": {
     "name": "ARTE Deutsch"
   },
-  "ServusTV HD": {},
-  "ARD-alpha": {},
+  "ServusTV HD": {
+    "name": "ServusTV"
+  },
+  "ARD-alpha": {
+    "name": "ARD Alpha"
+  },
   "one HD": {},
   "ZDFneo HD": {},
   "ZDFinfo HD": {},
-  "Welt der Wunder": {},
+  "Welt der Wunder": {
+    "name": "Welt der Wunder TV"
+  },
   "phoenix": {},
   "tagesschau24": {},
   "WELT": {},
@@ -18,23 +24,14 @@
   "euronews deutsch": {},
   "Red Bull TV": {},
   "KiKA": {},
-  "Nickelodeon": {},
-  "One 1 Music TV": {},
-  "Zwei 2 Music TV": {},
   "WDR HD": {},
-  "WDR Aachen HD": {},
   "WDR Bonn HD": {},
-  "WDR Bergisches Land HD": {},
-  "WDR Dortmund HD": {},
-  "WDR Düsseldorf HD": {},
-  "WDR Duisburg HD": {},
   "WDR Köln HD": {
-    "name": "WDR Fernsehen Köln"
+    "name": "WDR Fernsehen Koln"
   },
-  "WDR Münsterland HD": {},
-  "WDR Ostwestfalen HD": {},
-  "WDR Südwestfalen HD": {},
-  "WDR Ruhr HD": {},
+  "WDR Münsterland HD": {
+    "name": "WDR Fernsehen Münsterland"
+  },
   "SWR Baden-Württemberg HD": {},
   "SWR Rheinland-Pfalz HD": {},
   "NDR Niedersachsen HD": {},
@@ -54,34 +51,35 @@
   "Deutsche Welle": {},
   "Deutsche Welle+": {},
   "Deutsche Welle (EN)": {},
+  "ARTE Event 1": {},
+  "ARTE Event 2": {},
+  "ARTE Event 3": {},
+  "ARTE Event 4": {},
+  "ARTE Event 5": {},
+  "ARTE Event 6": {},
   "Parlamentsfernsehen 1": {},
   "Parlamentsfernsehen 2": {},
   "Parlamentsfernsehen 3": {},
   "Parlamentsfernsehen 4": {},
   "EbS Live (Europe by Satellite)": {},
   "EbS+ Live (Europe by Satellite)": {},
-  "ServusTV HD (AT)": {},
-  "ORF eins HD": {},
-  "ORF 2 HD": {},
-  "ORF III HD": {},
-  "Tirol TV": {},
-  "oe24 TV": {},
-  "TeleZüri HD": {},
-  "TeleBärn HD": {},
-  "Tele M1 HD": {},
-  "TVO (CH)": {},
   "TeleBielingue": {},
-  "TVM3": {},
-  "Telebasel": {},
   "ABC News": {},
   "NASA TV": {},
   "CBSN": {},
-  "CBN News": {},
-  "Bloomberg TV": {},
+  "Bloomberg TV": {
+    "name": "Bloomberg TV Europe"
+  },
   "CNN International Europe": {},
-  "Create & Craft TV": {},
-  "Sky News": {},
+  "Sky News Extra": {},
   "ARTE HD (FR)": {},
-  "France 24": {},
-  "BFMTV": {}
+  "Rai News 24": {},
+  "Al Jazeera English": {},
+  "BBC World Service": {},
+  "Der Aktionär TV (720p)": {
+    "name": "Der Aktionär TV"
+  },
+  "Pluto TV N24 Doku (720p)": {
+    "name": "N24 Doku"
+  }
 }
