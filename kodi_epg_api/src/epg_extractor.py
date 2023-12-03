@@ -19,7 +19,7 @@ __copyright__ = ("Copyright (C) Ralf Antonius Timmermann, "
                  "AIfA, University Bonn")
 __credits__ = ""
 __license__ = "BSD 3-Clause"
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __maintainer__ = "Dr. Ralf Antonius Timmermann"
 __email__ = "rtimmermann@astro.uni-bonn.de"
 __status__ = "QA"
@@ -52,8 +52,9 @@ class MyException(Exception):
 def logging_debug(debug) -> None:
     if debug:
         logging.getLogger().setLevel(logging.DEBUG)
-        for _, log_obj in logging.Logger.manager.loggerDict.items():
-            log_obj.disabled = True
+        for loggers, log_obj in logging.Logger.manager.loggerDict.items():
+            if not loggers.startswith("ipytv"):
+                log_obj.disabled = True
 
 
 def get_iptv(

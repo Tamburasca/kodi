@@ -2,6 +2,7 @@
 ## unreleased (2023-mm-dd)
 ### Added
 ### Changed
+- Logging to ipytv extended
 ### Fixed
 ### Deprecated
 ### Removed
