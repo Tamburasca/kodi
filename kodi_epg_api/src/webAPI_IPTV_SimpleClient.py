@@ -11,15 +11,17 @@ import argparse
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import Response, PlainTextResponse
 from fastapi import status
+from fastapi.openapi.utils import get_openapi
 import uvicorn
 import logging
+from typing import Dict, Any
 
 __author__ = "Dr. Ralf Antonius Timmermann"
 __copyright__ = ("Copyright (C) Ralf Antonius Timmermann, "
                  "AIfA, University Bonn")
 __credits__ = ""
 __license__ = "BSD 3-Clause"
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 __maintainer__ = "Dr. Ralf Antonius Timmermann"
 __email__ = "rtimmermann@astro.uni-bonn.de"
 __status__ = "QA"
@@ -29,15 +31,18 @@ myformat = ("%(asctime)s.%(msecs)03d :: %(levelname)s: %(filename)s - "
 logging.basicConfig(format=myformat,
                     level=logging.INFO,
                     datefmt="%Y-%m-%d %H:%M:%S")
-# suppress logs from ipytv module
+# suppress debug & info logs from ipytv module
 logging.getLogger("ipytv").setLevel(logging.WARNING)
 
-url_epg = "http://localhost:3000/guide.xml"  # from inside docker container
+URL_EPG = "http://localhost:3000/guide.xml"  # from inside docker container
+HOST = '0.0.0.0'
+PATH_GUIDE = "/guide.xml"
 
 
 class MyException(Exception):
     def __init__(
             self,
+            *,
             status_code,
             detail
     ):
@@ -49,7 +54,36 @@ class MyException(Exception):
         self.detail: str = detail
 
 
-def logging_debug(debug) -> None:
+def my_openapi_schema() -> Dict[str, Any]:
+    """
+    see blog, e.g.
+    https://www.linode.com/docs/guides/documenting-a-fastapi-app-with-openapi/
+    :return: modified openapi schema
+    """
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title="Kodi Web Rest API",
+        version=__version__,
+        description="API to process IPTV and EPG data",
+        routes=app.routes
+    )
+    openapi_schema["paths"][PATH_GUIDE]["get"]["responses"]["200"] = {
+            "description": "Return an EPG in xml format.",
+            "content": {
+                "application/xml": {
+                    "schema": {}
+                }
+            }
+        }
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+
+def logging_debug(
+        *,
+        debug: bool
+) -> None:
     if debug:
         logging.getLogger().setLevel(logging.DEBUG)
         for loggers, log_obj in logging.Logger.manager.loggerDict.items():
@@ -58,6 +92,7 @@ def logging_debug(debug) -> None:
 
 
 def get_iptv(
+        *,
         urls: str,
         filtered: bool,
         debug: bool
@@ -127,7 +162,10 @@ def get_iptv(
         else pl_add.to_m3u_plus_playlist()
 
 
-def get_guide(debug: bool) -> str:
+def get_guide(
+        *,
+        debug: bool
+) -> str:
 
     logging_debug(debug=debug)
 
@@ -135,7 +173,7 @@ def get_guide(debug: bool) -> str:
         channel_dict = json.load(f)
 
     try:
-        response = requests.get(url_epg)
+        response = requests.get(URL_EPG)
         response.raise_for_status()
     except (
             requests.exceptions.HTTPError,
@@ -162,20 +200,17 @@ def get_guide(debug: bool) -> str:
     )
 
 
-app = FastAPI(
-    title="Kodi Web REST API",
-    version=__version__,
-    description="API to process IPTV and EPG data",
-)
+app = FastAPI()
 
 
 @app.get(
-    "/guide.xml",
+    PATH_GUIDE,
     summary="Outputs a corrected EPG response in xml format"
 )
 async def epg() -> Response:
     try:
         return Response(
+            status_code=status.HTTP_200_OK,
             content=get_guide(debug=argparser.parse_args().debug),
             media_type="application/xml",
         )
@@ -188,8 +223,7 @@ async def epg() -> Response:
 
 @app.get(
     "/iptv/read",
-    summary="Filtered & corrected list of channels with response type in "
-            "M3U format",
+    summary="Filtered & corrected list of channels with response in M3U format",
     response_class=PlainTextResponse
 )
 async def read() -> PlainTextResponse:
@@ -207,7 +241,7 @@ async def read() -> PlainTextResponse:
 
 @app.get(
     "/iptv/unfiltered",
-    summary="Unfiltered list of channels with response type in M3U format",
+    summary="Unfiltered list of channels with response in M3U format",
     response_class=PlainTextResponse
 )
 async def unfiltered() -> PlainTextResponse:
@@ -222,6 +256,8 @@ async def unfiltered() -> PlainTextResponse:
             status_code=e.status_code,
             detail=e.detail)
 
+# custom schema
+app.openapi = my_openapi_schema
 
 argparser = argparse.ArgumentParser(
     description="Rest API for IPTV & EPG client")
@@ -250,5 +286,5 @@ logging.info("Accepting requests on port {}"
              .format(argparser.parse_args().api_port))
 
 uvicorn.run(app,
-            host='0.0.0.0',
+            host=HOST,
             port=argparser.parse_args().api_port)

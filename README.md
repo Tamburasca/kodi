@@ -1,17 +1,34 @@
 # Kodi Rest API
 
-for
-1. m3u channel sources (filtered & unfiltered) for sites provided in .env 
-(separated by comma). Provided endpoints:
+serves as a wrapper for IPTV and EPG sources in order to filter and 
+rename attributes. This is required - for a few channels - 
+in order to match channels and their program guide.
+
+1. Channel sources (filtered & unfiltered) for all sites that are 
+provided in .env (separated by comma). Returns a text/plain response to 
+serve a m3u file format. Filtering and reformating is defined in 
+[iptv_corrected.json](https://github.com/Tamburasca/kodi/blob/63b8967e152d43200b7169c17d566f78c9708959/kodi_epg_api/src/data/iptv_corrected.json)
+
+Provided endpoints:
 
 
     http://localhost:3003/iptv/read
 
     http://localhost:3003/iptv/unfiltered
 
+2. Electronic program guide (epg), renames channel names as provided from 
+https://github.com/iptv-org/epg via http://localhost:3000/guide.xml The channel
+site is defined in 
+[wrapper.sh](https://github.com/Tamburasca/kodi/blob/69187c86d9edc0eaa648434f28c417774f76dc01/kodi_epg_api/wrapper.sh).
+Renaming is defined in [epg_corrected.json](https://github.com/Tamburasca/kodi/blob/63b8967e152d43200b7169c17d566f78c9708959/kodi_epg_api/src/data/epg_corrected.json)
 
-2. guide.xml for epg, renames channel names as provided from 
-https://github.com/iptv-org/epg via http://localhost:3000/guide.xml
-
+Provided endpoint:
 
     http://localhost:3003/guide.xml
+
+
+If you need to call the KODI Web API via, here a few examples:
+    
+    curl --data-binary '{"jsonrpc": "2.0", "method": "PVR.GetChannelGroups", "params": {"channeltype" : "tv"}, "id": 1 }' -H 'content-type: application/json;' http://localhost:8080/jsonrpc
+    curl --data-binary '{"jsonrpc": "2.0", "method": "System.GetProperties", "params": {"properties": ["canreboot"]}, "id": 1 }' -H 'content-type: application/json;' http://localhost:8080/jsonrpc
+    curl --data-binary '{"jsonrpc": "2.0", "method": "Input.executeaction", "params": {"action": "reloadkeymaps"}, "id": 1 }' -H 'content-type: application/json;' http://localhost:8080/jsonrpc
