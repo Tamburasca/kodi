@@ -6,6 +6,14 @@
 ### Deprecated
 ### Removed
 ### Security
+## 0.1.0 (2023-12-08)
+### Added
+- guide.xml is cached in local file
+### Changed
+### Fixed
+### Deprecated
+### Removed
+### Security
 ## 0.0.4 (2023-12-07)
 ### Added
 - redefine openapi for application/xml response type

@@ -35,7 +35,8 @@ logging.basicConfig(format=myformat,
 logging.getLogger("ipytv").setLevel(logging.WARNING)
 
 URL_EPG = "http://localhost:3000/guide.xml"  # from inside docker container
-HOST = '0.0.0.0'
+API_HOST = '0.0.0.0'
+API_PORT = 3003
 PATH_GUIDE = "/guide.xml"
 
 
@@ -175,16 +176,23 @@ def get_guide(
     try:
         response = requests.get(URL_EPG)
         response.raise_for_status()
+        tree = ET.fromstring(response.content)
     except (
             requests.exceptions.HTTPError,
             requests.exceptions.ConnectionError,
             ConnectionRefusedError
-    ) as e:
-        raise MyException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=str(e)
-        )
-    tree = ET.fromstring(response.content)
+    ):
+        try:
+            with open(
+                    "data/{}".format(argparser.parse_args().epg_cached)
+            ) as f1:
+                tree = ET.fromstring(f1.read())
+        except IOError:
+            raise MyException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="EPG could also not be loaded from cache!"
+            )
+
     for channel in tree.findall('channel'):
         for display_name in channel.findall("display-name"):
             try:
@@ -266,19 +274,25 @@ argparser.add_argument(
     '--api_port',
     required=False,
     type=int,
-    help='Port (default: 3003)',
-    default=3003  # change docker run command appropriately
+    help="Port (default: {})".format(API_PORT),
+    default=API_PORT  # change docker run command appropriately
 )
 argparser.add_argument(
     '--iptv_url',
     required=False,
     type=str,
-    help='url of iptv providers (separated by comma)'
+    help="url of iptv providers (separated by comma)"
+)
+argparser.add_argument(
+    '--epg_cached',
+    required=False,
+    type=str,
+    help="name of EPG cached file (.xml)"
 )
 argparser.add_argument(
     '--debug',
     required=False,
-    help='Debug Mode (default: False)',
+    help="Debug Mode (default: False)",
     action="store_true"
 )
 
@@ -286,5 +300,5 @@ logging.info("Accepting requests on port {}"
              .format(argparser.parse_args().api_port))
 
 uvicorn.run(app,
-            host=HOST,
+            host=API_HOST,
             port=argparser.parse_args().api_port)

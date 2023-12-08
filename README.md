@@ -26,9 +26,35 @@ Provided endpoint:
 
     http://localhost:3003/guide.xml
 
+Note: the EPG is cached after the javascript server is started, such it can
+be utilized in case grabbing the site is still active.
 
 If you need to call the KODI Web API via, here a few examples:
     
     curl --data-binary '{"jsonrpc": "2.0", "method": "PVR.GetChannelGroups", "params": {"channeltype" : "tv"}, "id": 1 }' -H 'content-type: application/json;' http://localhost:8080/jsonrpc
     curl --data-binary '{"jsonrpc": "2.0", "method": "System.GetProperties", "params": {"properties": ["canreboot"]}, "id": 1 }' -H 'content-type: application/json;' http://localhost:8080/jsonrpc
     curl --data-binary '{"jsonrpc": "2.0", "method": "Input.executeaction", "params": {"action": "reloadkeymaps"}, "id": 1 }' -H 'content-type: application/json;' http://localhost:8080/jsonrpc
+
+## Installation on a Raspberry PI 4
+
+Install - under PVR-Clients - the Simple IPTV Client and configure it for
+the following menu items:
+
+1. General:
+
+    URL for M3U-List: http://localhost:3003/iptv/read
+
+
+2. EPG:
+
+    URL for XMLTV: http://localhost:3003/guide.xml
+
+
+Since KODI does not load the IPTV playlist in time (reason: docker container 
+is not up when the playlist is loaded):
+
+    systemctl edit kodi-autostart.service
+
+	add line: 
+		[Service]
+		ExecStartPre=/bin/sleep 10

@@ -55,5 +55,7 @@ ENV NODE_OPTIONS="--max_old_space_size=${MAX_OLD_SPACE_SIZE}"
 RUN npm install
 
 ENV IPTV_URL=$IPTV_URL
+ENV EPG_CACHED=$EPG_CACHED
+
 WORKDIR /iptv/
 CMD ./wrapper.sh
