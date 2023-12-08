@@ -1,0 +1,85 @@
+{
+  "Das Erste HD": {},
+  "ZDF HD": {},
+  "3sat": {},
+  "ARTE HD": {
+    "name": "ARTE Deutsch"
+  },
+  "ServusTV HD": {
+    "name": "ServusTV"
+  },
+  "ARD-alpha": {
+    "name": "ARD Alpha"
+  },
+  "one HD": {},
+  "ZDFneo HD": {},
+  "ZDFinfo HD": {},
+  "Welt der Wunder": {
+    "name": "Welt der Wunder TV"
+  },
+  "phoenix": {},
+  "tagesschau24": {},
+  "WELT": {},
+  "WELT News (Dauerschleife)": {},
+  "euronews deutsch": {},
+  "Red Bull TV": {},
+  "KiKA": {},
+  "WDR HD": {},
+  "WDR Bonn HD": {},
+  "WDR Köln HD": {
+    "name": "WDR Fernsehen Koln"
+  },
+  "WDR Münsterland HD": {
+    "name": "WDR Fernsehen Münsterland"
+  },
+  "SWR Baden-Württemberg HD": {},
+  "SWR Rheinland-Pfalz HD": {},
+  "NDR Niedersachsen HD": {},
+  "NDR Schleswig-Holstein HD": {},
+  "NDR Mecklenburg-Vorpommern HD": {},
+  "NDR Hamburg HD": {},
+  "Radio Bremen TV HD": {},
+  "BR Fernsehen Nord HD": {},
+  "BR Fernsehen Süd HD": {},
+  "MDR Sachsen HD": {},
+  "MDR Sachsen-Anhalt HD": {},
+  "MDR Thüringen HD": {},
+  "hr-fernsehen": {},
+  "rbb Berlin HD": {},
+  "rbb Brandenburg HD": {},
+  "SR Fernsehen HD": {},
+  "Deutsche Welle": {},
+  "Deutsche Welle+": {},
+  "Deutsche Welle (EN)": {},
+  "ARTE Event 1": {},
+  "ARTE Event 2": {},
+  "ARTE Event 3": {},
+  "ARTE Event 4": {},
+  "ARTE Event 5": {},
+  "ARTE Event 6": {},
+  "Parlamentsfernsehen 1": {},
+  "Parlamentsfernsehen 2": {},
+  "Parlamentsfernsehen 3": {},
+  "Parlamentsfernsehen 4": {},
+  "EbS Live (Europe by Satellite)": {},
+  "EbS+ Live (Europe by Satellite)": {},
+  "TeleBielingue": {},
+  "ABC News": {},
+  "NASA TV": {},
+  "CBSN": {},
+  "Bloomberg TV": {
+    "name": "Bloomberg TV Europe"
+  },
+  "CNN International Europe": {},
+  "Sky News Extra": {},
+  "ARTE HD (FR)": {},
+  "Rai News 24": {},
+  "Al Jazeera English": {},
+  "BBC World Service": {},
+  "Der Aktionär TV (720p)": {
+    "name": "Der Aktionär TV"
+  },
+  "Pluto TV N24 Doku (720p)": {
+    "name": "N24 Doku"
+  }
+}
