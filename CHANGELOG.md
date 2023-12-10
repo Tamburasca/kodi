@@ -6,6 +6,15 @@
 ### Deprecated
 ### Removed
 ### Security
+## 0.1.1 (2023-12-10)
+### Added
+- iptv_corrected.json updated by 3rd German local channels 
+### Changed
+- python script option epg_cached may be empty
+### Fixed
+### Deprecated
+### Removed
+### Security
 ## 0.1.0 (2023-12-08)
 ### Added
 - guide.xml is cached in local file

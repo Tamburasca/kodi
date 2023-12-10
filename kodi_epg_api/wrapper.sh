@@ -9,10 +9,12 @@ npm run grab -- --site=tv.blue.ch --days 3 --maxConnections=3
 # start the JavaScript server, EPG available at port=3000
 npm run serve &
 # save EPG to cache
-sleep 30; \
-cd /iptv/iptv/src/data; \
-curl localhost:3000/guide.xml > "$EPG_CACHED"; \
-chmod 666 "$EPG_CACHED"
+if [ -n "$EPG_CACHED" ]
+then
+  sleep 30; \
+  curl localhost:3000/guide.xml > /iptv/iptv/src/data/"$EPG_CACHED"; \
+  chmod 666 /iptv/iptv/src/data/"$EPG_CACHED"
+fi;
 
 # Wait for any process to exit
 wait

@@ -88,7 +88,9 @@ def logging_debug(
     if debug:
         logging.getLogger().setLevel(logging.DEBUG)
         for loggers, log_obj in logging.Logger.manager.loggerDict.items():
-            if not loggers.startswith("ipytv"):
+            if not loggers.startswith(
+                    ("ipytv", "uvicorn")
+            ):
                 log_obj.disabled = True
 
 
@@ -177,20 +179,24 @@ def get_guide(
         response = requests.get(URL_EPG)
         response.raise_for_status()
         tree = ET.fromstring(response.content)
+        logging.debug("Pulled EPG from internet.")
     except (
             requests.exceptions.HTTPError,
             requests.exceptions.ConnectionError,
             ConnectionRefusedError
     ):
         try:
+            if not argparser.parse_args().epg_cached:
+                raise IOError
             with open(
-                    "data/{}".format(argparser.parse_args().epg_cached)
+                    "data/{}".format(argparser.parse_args().epg_cached, "r")
             ) as f1:
                 tree = ET.fromstring(f1.read())
+            logging.debug("Pulled EPG from cache.")
         except IOError:
             raise MyException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail="EPG could also not be loaded from cache!"
+                detail="EPG also not cached."
             )
 
     for channel in tree.findall('channel'):

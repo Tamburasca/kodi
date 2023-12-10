@@ -32,22 +32,34 @@
   "WDR Münsterland HD": {
     "name": "WDR Fernsehen Münsterland"
   },
-  "SWR Baden-Württemberg HD": {},
+  "SWR Baden-Württemberg HD": {
+    "name": "SWR Fernsehen Baden-Wurttemberg"
+  },
   "SWR Rheinland-Pfalz HD": {},
   "NDR Niedersachsen HD": {},
   "NDR Schleswig-Holstein HD": {},
   "NDR Mecklenburg-Vorpommern HD": {},
-  "NDR Hamburg HD": {},
+  "NDR Hamburg HD": {
+    "name": "NDR Fernsehen Hamburg"
+  },
   "Radio Bremen TV HD": {},
   "BR Fernsehen Nord HD": {},
-  "BR Fernsehen Süd HD": {},
-  "MDR Sachsen HD": {},
+  "BR Fernsehen Süd HD": {
+    "name": "BR Fernsehen Sud"
+  },
+  "MDR Sachsen HD": {
+    "name": "MDR Fernsehen Sachsen"
+  },
   "MDR Sachsen-Anhalt HD": {},
   "MDR Thüringen HD": {},
   "hr-fernsehen": {},
-  "rbb Berlin HD": {},
+  "rbb Berlin HD": {
+    "name": "rbb Fernsehen Berlin"
+  },
   "rbb Brandenburg HD": {},
-  "SR Fernsehen HD": {},
+  "SR Fernsehen HD": {
+    "name": "SR Fernsehen"
+  },
   "Deutsche Welle": {},
   "Deutsche Welle+": {},
   "Deutsche Welle (EN)": {},
