@@ -1,6 +1,7 @@
 # Kodi Rest API
 
-serves as a wrapper for IPTV and EPG sources in order to filter and 
+serves as a wrapper for the IPTV SimpleClient 
+as IPTV and EPG sources in order to filter and 
 rename attributes. This is required - for a few channels - 
 in order to match channels and their program guide.
 
@@ -37,7 +38,7 @@ If you need to call the KODI Web API via, here a few examples:
 
 ## Installation on a Raspberry PI 4
 
-Install - under PVR-Clients - the Simple IPTV Client and configure it for
+Install - under PVR-Clients - the IPTV SimpleClient and configure it for
 the following menu items:
 
 1. General:
@@ -50,11 +51,10 @@ the following menu items:
     URL for XMLTV: http://localhost:3003/guide.xml
 
 
-Since KODI does not load the IPTV playlist in time (reason: docker container 
-is not up when the playlist is loaded):
+Since the docker container may not yet be up when the playlist is loaded 
+KODI's start needs to be delayed. Add the following line:
 
     systemctl edit kodi-autostart.service
 
-	add line: 
-		[Service]
-		ExecStartPre=/bin/sleep 10
+    [Service]
+    ExecStartPre=/bin/sleep 10

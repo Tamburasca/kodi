@@ -2,21 +2,13 @@
   "Das Erste HD": {},
   "ZDF HD": {},
   "3sat": {},
-  "ARTE HD": {
-    "name": "ARTE Deutsch"
-  },
-  "ServusTV HD": {
-    "name": "ServusTV"
-  },
-  "ARD-alpha": {
-    "name": "ARD Alpha"
-  },
+  "ARTE HD": {},
+  "ServusTV HD": {},
+  "ARD-alpha": {},
   "one HD": {},
   "ZDFneo HD": {},
   "ZDFinfo HD": {},
-  "Welt der Wunder": {
-    "name": "Welt der Wunder TV"
-  },
+  "Welt der Wunder": {},
   "phoenix": {},
   "tagesschau24": {},
   "WELT": {},
@@ -26,40 +18,24 @@
   "KiKA": {},
   "WDR HD": {},
   "WDR Bonn HD": {},
-  "WDR Köln HD": {
-    "name": "WDR Fernsehen Koln"
-  },
-  "WDR Münsterland HD": {
-    "name": "WDR Fernsehen Münsterland"
-  },
-  "SWR Baden-Württemberg HD": {
-    "name": "SWR Fernsehen Baden-Wurttemberg"
-  },
+  "WDR Köln HD": {},
+  "WDR Münsterland HD": {},
+  "SWR Baden-Württemberg HD": {},
   "SWR Rheinland-Pfalz HD": {},
   "NDR Niedersachsen HD": {},
   "NDR Schleswig-Holstein HD": {},
   "NDR Mecklenburg-Vorpommern HD": {},
-  "NDR Hamburg HD": {
-    "name": "NDR Fernsehen Hamburg"
-  },
+  "NDR Hamburg HD": {},
   "Radio Bremen TV HD": {},
   "BR Fernsehen Nord HD": {},
-  "BR Fernsehen Süd HD": {
-    "name": "BR Fernsehen Sud"
-  },
-  "MDR Sachsen HD": {
-    "name": "MDR Fernsehen Sachsen"
-  },
+  "BR Fernsehen Süd HD": {},
+  "MDR Sachsen HD": {},
   "MDR Sachsen-Anhalt HD": {},
   "MDR Thüringen HD": {},
   "hr-fernsehen": {},
-  "rbb Berlin HD": {
-    "name": "rbb Fernsehen Berlin"
-  },
+  "rbb Berlin HD": {},
   "rbb Brandenburg HD": {},
-  "SR Fernsehen HD": {
-    "name": "SR Fernsehen"
-  },
+  "SR Fernsehen HD": {},
   "Deutsche Welle": {},
   "Deutsche Welle+": {},
   "Deutsche Welle (EN)": {},
