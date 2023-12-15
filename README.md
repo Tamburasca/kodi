@@ -36,6 +36,12 @@ If you need to call the KODI Web API via, here a few examples:
     curl --data-binary '{"jsonrpc": "2.0", "method": "System.GetProperties", "params": {"properties": ["canreboot"]}, "id": 1 }' -H 'content-type: application/json;' http://localhost:8080/jsonrpc
     curl --data-binary '{"jsonrpc": "2.0", "method": "Input.executeaction", "params": {"action": "reloadkeymaps"}, "id": 1 }' -H 'content-type: application/json;' http://localhost:8080/jsonrpc
 
+Update the EPG via
+
+      $ docker exec -w <working dir> <container id | name> npm run grab -- --site=<web site>, e.g
+      $ docker exec -w /iptv/epg/scripts/commands/epg/ kodi_all npm run grab -- --site=chaines-tv.orange.fr
+
+
 ## Installation on a Raspberry PI 4
 
 Install - under PVR-Clients - the IPTV SimpleClient and configure it for
@@ -52,9 +58,11 @@ the following menu items:
 
 
 Since the docker container may not yet be up when the playlist is loaded 
-KODI's start needs to be delayed. Add the following line:
+KODI's start needs to be delayed. 
 
     systemctl edit kodi-autostart.service
+
+Add the following line:
 
     [Service]
     ExecStartPre=/bin/sleep 10

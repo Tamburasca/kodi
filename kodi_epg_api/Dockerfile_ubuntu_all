@@ -1,16 +1,4 @@
-# 1) build
-#docker build -t kodi_all:0.1 -f Dockerfile_ubuntu_all . ; docker image prune -f
-
-# 2) run
-# outside
-#docker run -d -p 0.0.0.0:3003:3003 -p 0.0.0.0:3001:3000 --restart unless-stopped --name kodi_all \
-#--env-file .env -v "$(pwd)"/src/data:/iptv/iptv/src/data kodi_all:0.1
-# locally
-##docker run -d -p 127.0.0.1:3003:3003 -p 127.0.0.1:3001:3000 --restart unless-stopped --name kodi_all \
-#--env-file .env -v "$(pwd)"/src/data:/iptv/iptv/src/data kodi_all:0.1
-
-# 3) update guide via
-# docker exec -w <working dir> <container id | name> npm run grab -- --site=<web site>, e.g.
+# update EPG via $ docker exec -w <working dir> <container id | name> npm run grab -- --site=<web site>, e.g.
 #docker exec -w /iptv/epg/scripts/commands/epg/ kodi_all npm run grab -- --site=chaines-tv.orange.fr
 # via crontab -e
 #0 9,12,15,18 * * * docker exec -w /iptv/epg/scripts/commands/epg/ kodi_all npm run grab -- --site=chaines-tv.orange.fr
@@ -54,6 +42,7 @@ RUN npm install
 
 ENV IPTV_URL=$IPTV_URL
 ENV EPG_CACHED=$EPG_CACHED
+ENV DEBUG=$DEBUG
 
 WORKDIR /iptv/
 CMD ./wrapper.sh

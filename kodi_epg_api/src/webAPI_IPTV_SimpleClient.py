@@ -8,9 +8,8 @@ import requests
 from xml.etree import ElementTree as ET
 import json
 import argparse
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import Response, PlainTextResponse
-from fastapi import status
 from fastapi.openapi.utils import get_openapi
 import uvicorn
 import logging
@@ -21,7 +20,7 @@ __copyright__ = ("Copyright (C) Ralf Antonius Timmermann, "
                  "AIfA, University Bonn")
 __credits__ = ""
 __license__ = "BSD 3-Clause"
-__version__ = "0.0.4"
+__version__ = "0.2.0"
 __maintainer__ = "Dr. Ralf Antonius Timmermann"
 __email__ = "rtimmermann@astro.uni-bonn.de"
 __status__ = "QA"
@@ -78,6 +77,7 @@ def my_openapi_schema() -> Dict[str, Any]:
             }
         }
     app.openapi_schema = openapi_schema
+
     return app.openapi_schema
 
 
@@ -188,15 +188,13 @@ def get_guide(
         try:
             if not argparser.parse_args().epg_cached:
                 raise IOError
-            with open(
-                    "data/{}".format(argparser.parse_args().epg_cached, "r")
-            ) as f1:
+            with open("data/epg_cached.xml", "r") as f1:
                 tree = ET.fromstring(f1.read())
             logging.debug("Pulled EPG from cache.")
         except IOError:
             raise MyException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail="EPG also not cached."
+                detail="EPG was not cached."
             )
 
     for channel in tree.findall('channel'):
@@ -287,19 +285,17 @@ argparser.add_argument(
     '--iptv_url',
     required=False,
     type=str,
-    help="url of iptv providers (separated by comma)"
+    help="URL of IPTV providers (separated by comma)"
 )
 argparser.add_argument(
     '--epg_cached',
-    required=False,
-    type=str,
-    help="name of EPG cached file (.xml)"
+    help="Read from Cached EPG",
+    action=argparse.BooleanOptionalAction
 )
 argparser.add_argument(
     '--debug',
-    required=False,
-    help="Debug Mode (default: False)",
-    action="store_true"
+    help="Debug Mode",
+    action=argparse.BooleanOptionalAction
 )
 
 logging.info("Accepting requests on port {}"

@@ -6,6 +6,14 @@
 ### Deprecated
 ### Removed
 ### Security
+## 0.2.0 (2023-mm-dd)
+### Added
+### Changed
+- debug and epg_cached options are bool now and can be modified in .env
+### Fixed
+### Deprecated
+### Removed
+### Security
 ## 0.1.1 (2023-12-10)
 ### Added
 - iptv_corrected.json updated by 3rd German local channels 
