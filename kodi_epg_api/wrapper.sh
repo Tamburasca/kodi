@@ -1,10 +1,10 @@
-if [ "$DEBUG" = "true" ] ; then export debug="--debug" ; fi
-if [ "$EPG_CACHED" = "true" ] ; then export epg_cached="--epg_cached" ; fi
+if [ "$DEBUG" = "true" ] ; then debug="--debug" ; fi
+if [ "$EPG_CACHED" = "true" ] ; then epg_cached="--epg_cached" ; fi
 
 # Start the REST APIs
 cd /iptv/iptv/src/ || exit
 # start fastAPI at port=3003
-python3 -u webAPI_IPTV_SimpleClient.py --iptv_url "$IPTV_URL" ${debug} ${epg_cached} &
+python3 -u webAPI_IPTV_SimpleClient.py --iptv_url "${IPTV_URL}" ${debug} ${epg_cached} &
 
 cd /iptv/epg/scripts/commands/epg/ || exit
 # Rest API throws an exception if not at least one site is loaded
