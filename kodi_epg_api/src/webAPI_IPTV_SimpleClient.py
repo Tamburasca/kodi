@@ -289,13 +289,13 @@ argparser.add_argument(
 )
 argparser.add_argument(
     '--epg_cached',
-    help="Read from Cached EPG",
-    action=argparse.BooleanOptionalAction
+    help="Read from cached EPG",
+    action="store_true"
 )
 argparser.add_argument(
     '--debug',
     help="Debug Mode",
-    action=argparse.BooleanOptionalAction
+    action="store_true"
 )
 
 logging.info("Accepting requests on port {}"
