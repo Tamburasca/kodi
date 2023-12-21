@@ -15,7 +15,7 @@ npm run serve &
 if [ "$EPG_CACHED" = "true" ]
 then
   sleep 30; \
-  curl localhost:3000/guide.xml > /iptv/iptv/src/data/epg_cached.xml; \
+  curl -o /iptv/iptv/src/data/epg_cached.xml localhost:3000/guide.xml; \
   chmod 666 /iptv/iptv/src/data/epg_cached.xml
 fi;
 
