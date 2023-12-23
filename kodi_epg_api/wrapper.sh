@@ -14,9 +14,11 @@ npm run grab -- --site=tv.blue.ch --days 3 --maxConnections=3
 # save EPG to cache
 if [ "$EPG_CACHED" = "true" ]
 then
-  curl -o /iptv/iptv/src/data/epg_cached.xml localhost:3000/guide.xml; \
-  chmod 666 /iptv/iptv/src/data/epg_cached.xml
-fi;
+  curl -o /iptv/iptv/src/data/epg_cached.xml localhost:3000/guide.xml ; \
+  chmod 666 /iptv/iptv/src/data/epg_cached.xml || true
+else
+  rm -f /iptv/iptv/src/data/epg_cached.xml || true
+fi
 
 # Wait for any process to exit
 wait

@@ -194,7 +194,7 @@ def get_guide(
         except IOError:
             raise MyException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail="EPG was not cached."
+                detail="EPG is not cached."
             )
 
     for channel in tree.findall('channel'):
