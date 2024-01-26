@@ -3,7 +3,6 @@
   "ZDF HD": {},
   "3sat": {},
   "ARTE HD": {},
-  "ServusTV HD": {},
   "ARD-alpha": {},
   "one HD": {},
   "ZDFneo HD": {},
@@ -67,6 +66,6 @@
     "name": "Der Aktionär TV"
   },
   "Pluto TV N24 Doku (720p)": {
-    "name": "Pluto TV N24 Doku"
+    "name": "N24 Doku"
   }
 }
