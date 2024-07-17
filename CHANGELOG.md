@@ -1,7 +1,16 @@
 # Changelog
-## unreleased (2023-mm-dd)
+## unreleased (xxxx-xx-xx)
 ### Added
 ### Changed
+### Fixed
+### Deprecated
+### Removed
+### Security
+## 0.2.1 (2024-07-17)
+### Added
+### Changed
+- update json
+- TV channel may be dsiabled from list - by station:{"disable": True}
 ### Fixed
 ### Deprecated
 ### Removed

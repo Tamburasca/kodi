@@ -16,7 +16,9 @@
   "KiKA": {},
   "WDR HD": {},
   "WDR Bonn HD": {},
-  "WDR Köln HD": {},
+  "WDR Köln HD": {
+    "disable": true
+  },
   "WDR Münsterland HD": {},
   "SWR Baden-Württemberg HD": {},
   "SWR Rheinland-Pfalz HD": {},

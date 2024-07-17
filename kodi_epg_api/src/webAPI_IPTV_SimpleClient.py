@@ -155,6 +155,8 @@ def get_iptv(
             c.attributes[IPTVAttr.TVG_SHIFT.value] = new_a.get("tvg-shift")
         if new_a.get("tvg_chno"):
             c.attributes[IPTVAttr.TVG_CHNO.value] = new_a.get("tvg_chno")
+        if new_a.get("disable", False):  # just skip, serve as placeholder
+            continue
 
         pl_new.append_channel(c)
 
