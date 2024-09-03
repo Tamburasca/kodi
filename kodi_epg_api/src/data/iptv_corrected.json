@@ -11,7 +11,13 @@
   "phoenix": {},
   "tagesschau24": {},
   "WELT": {},
-  "WELT News (Dauerschleife)": {},
+  "WELT News (Dauerschleife)": {
+    "disable": true
+  },
+  "Welt der Wunder TV (576p)": {
+    "name": "Welt der Wunder TV"
+  },
+
   "Red Bull TV": {},
   "KiKA": {},
   "WDR HD": {},
@@ -36,9 +42,7 @@
   "rbb Berlin HD": {},
   "rbb Brandenburg HD": {},
   "SR Fernsehen HD": {},
-  "Deutsche Welle": {},
   "Deutsche Welle+": {},
-  "Deutsche Welle (EN)": {},
   "ARTE Event 1": {},
   "ARTE Event 2": {},
   "ARTE Event 3": {},
@@ -49,12 +53,11 @@
   "Parlamentsfernsehen 2": {},
   "Parlamentsfernsehen 3": {},
   "Parlamentsfernsehen 4": {},
-  "EbS Live (Europe by Satellite)": {},
-  "EbS+ Live (Europe by Satellite)": {},
   "TeleBielingue": {},
   "ABC News": {},
-  "NASA TV": {},
-  "CBSN": {},
+  "NASA TV": {
+      "disable": true
+  },
   "Bloomberg TV": {
     "name": "Bloomberg TV Europe"
   },
@@ -63,11 +66,11 @@
   "ARTE HD (FR)": {},
   "Rai News 24": {},
   "Al Jazeera English": {},
-  "BBC World Service": {},
-  "Der Aktionär TV (720p)": {
-    "name": "Der Aktionär TV"
+  "N24 Doku": {
+    "disable": true
   },
-  "Pluto TV N24 Doku (720p)": {
-    "name": "N24 Doku"
+  "Der Aktionär TV (720p)": {
+    "name": "Der Aktionär TV",
+    "disable": true
   }
 }

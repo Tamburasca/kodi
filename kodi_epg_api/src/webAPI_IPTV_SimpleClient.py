@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# coding: utf-8
 
 from ipytv import playlist
 from ipytv.playlist import M3UPlaylist
@@ -16,14 +17,13 @@ import logging
 from typing import Dict, Any
 
 __author__ = "Dr. Ralf Antonius Timmermann"
-__copyright__ = ("Copyright (C) Ralf Antonius Timmermann, "
-                 "AIfA, University Bonn")
+__copyright__ = "Copyright (C) Ralf Antonius Timmermann"
 __credits__ = ""
 __license__ = "BSD 3-Clause"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 __maintainer__ = "Dr. Ralf Antonius Timmermann"
-__email__ = "rtimmermann@astro.uni-bonn.de"
-__status__ = "QA"
+__email__ = "rtimmermann@gmx.de"
+__status__ = "Prod"
 
 myformat = ("%(asctime)s.%(msecs)03d :: %(levelname)s: %(filename)s - "
             "line %(lineno)s - function: %(funcName)s() :: %(message)s")
@@ -140,23 +140,31 @@ def get_iptv(
             new_a = channel_dict[c.name]
         except KeyError:
             continue
-        # fetch values, otherwise None
-        if new_a.get("name"):
-            c.name = new_a.get("name")
-        if new_a.get("extras"):
-            c.extras = new_a.get("extras")
-        if new_a.get("tvg-name"):
-            c.attributes[IPTVAttr.TVG_NAME.value] = new_a.get("tvg-name")
-        if new_a.get("tvg-id"):
-            c.attributes[IPTVAttr.TVG_ID.value] = new_a.get("tvg-id")
-        if new_a.get("group-title"):
-            c.attributes[IPTVAttr.GROUP_TITLE.value] = new_a.get("group-title")
-        if new_a.get("tvg-shift"):
-            c.attributes[IPTVAttr.TVG_SHIFT.value] = new_a.get("tvg-shift")
-        if new_a.get("tvg_chno"):
-            c.attributes[IPTVAttr.TVG_CHNO.value] = new_a.get("tvg_chno")
         if new_a.get("disable", False):  # just skip, serve as placeholder
             continue
+        # if new_a.get("name"):
+        #     c.name = new_a.get("name")
+        # if new_a.get("extras"):
+        #     c.extras = new_a.get("extras")
+        # if new_a.get("tvg-name"):
+        #     c.attributes[IPTVAttr.TVG_NAME.value] = new_a.get("tvg-name")
+        # if new_a.get("tvg-id"):
+        #     c.attributes[IPTVAttr.TVG_ID.value] = new_a.get("tvg-id")
+        # if new_a.get("group-title"):
+        #     c.attributes[IPTVAttr.GROUP_TITLE.value] = new_a.get("group-title")
+        # if new_a.get("tvg-shift"):
+        #     c.attributes[IPTVAttr.TVG_SHIFT.value] = new_a.get("tvg-shift")
+        # if new_a.get("tvg_chno"):
+        #     c.attributes[IPTVAttr.TVG_CHNO.value] = new_a.get("tvg_chno")
+        # fetch value, otherwise keep old one
+        c.name = new_a.get("name") or c.name
+        c.extras = new_a.get("extras") or c.extras
+        c.attributes["tvg-name"] = new_a.get("tvg-name") or c.attributes.get("tvg-name")
+        c.attributes["tvg-id"] = new_a.get("tvg-id") or c.attributes.get("tvg-id")
+        c.attributes["group-title"] = new_a.get("group-title") or c.attributes.get("group-title")
+        c.attributes["tvg-shift"] = new_a.get("tvg-shift") or c.attributes.get("tvg-shift")
+        c.attributes["tvg_chno"] = new_a.get("tvg_chno") or c.attributes.get("tvg_chno")
+        c.attributes["tvg-logo"] = new_a.get("tvg-logo") or c.attributes.get("tvg-logo")
 
         pl_new.append_channel(c)
 
