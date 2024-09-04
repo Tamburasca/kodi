@@ -3,7 +3,7 @@
 serves as a wrapper for the IPTV SimpleClient 
 as IPTV and EPG sources in order to filter and 
 rename attributes. This is required - for a few channels - 
-in order to match channels and their program guide.
+in order to match channels with their program guide.
 
 1. Channel sources (filtered & unfiltered) for all sites that are 
 provided in .env (separated by comma). Returns a text/plain response to 

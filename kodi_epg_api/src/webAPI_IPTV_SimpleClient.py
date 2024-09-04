@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+"""
+Web Server providing a Rest API serving as a wrapper for the IPTV SimpleClient
+as IPTV and EPG sources in order to filter and rename attributes.
+This is required - for a few channels - in order to match channels with
+their program guide.
+
+See also https://github.com/Tamburasca/kodi
+"""
+
 from ipytv import playlist
 from ipytv.playlist import M3UPlaylist
 from ipytv.exceptions import MalformedPlaylistException
