@@ -91,7 +91,7 @@ def my_openapi_schema() -> Dict[str, Any]:
 
 def logging_debug(
         *,
-        debug: bool
+        debug: bool = False
 ) -> None:
     if debug:
         logging.getLogger().setLevel(logging.DEBUG)
@@ -106,7 +106,7 @@ def get_iptv(
         *,
         urls: str,
         filtered: bool,
-        debug: bool
+        debug: bool = False
 ) -> str:
 
     logging_debug(debug=debug)
@@ -141,36 +141,39 @@ def get_iptv(
     logging.debug("\n" + json.dumps(tmp_dict,
                                     ensure_ascii=False,
                                     indent=2))
+    if filtered:
+        for item in all_channels:
+            c = item.copy()
+            try:
+                new_a = channel_dict[c.name]
+            except KeyError:
+                continue
+            if new_a.get("disable", False): continue # just skip, serve as placeholder
+            # supersede tag if provided
+            if v := new_a.get("name"): c.name = v
+            if v := new_a.get("extras"): c.extras = v
+            if v := new_a.get("tvg-name"): c.attributes["tvg-name"] = v
+            if v := new_a.get("tvg-id"): c.attributes["tvg-id"] = v
+            if v := new_a.get("group-title"): c.attributes["group-title"] = v
+            if v := new_a.get("tvg-shift"): c.attributes["tvg-shift"] = v
+            if v := new_a.get("tvg_chno"): c.attributes["tvg_chno"] = v
+            if v := new_a.get("tvg-logo"): c.attributes["tvg-logo"] = v
 
-    for item in all_channels:
-        c = item.copy()
-        try:
-            new_a = channel_dict[c.name]
-        except KeyError:
-            continue
-        if new_a.get("disable", False): continue # just skip, serve as placeholder
-        # supersede tag if provided
-        if v := new_a.get("name"): c.name = v
-        if v := new_a.get("extras"): c.extras = v
-        if v := new_a.get("tvg-name"): c.attributes["tvg-name"] = v
-        if v := new_a.get("tvg-id"): c.attributes["tvg-id"] = v
-        if v := new_a.get("group-title"): c.attributes["group-title"] = v
-        if v := new_a.get("tvg-shift"): c.attributes["tvg-shift"] = v
-        if v := new_a.get("tvg_chno"): c.attributes["tvg_chno"] = v
-        if v := new_a.get("tvg-logo"): c.attributes["tvg-logo"] = v
+            pl_new.append_channel(c)
 
-        pl_new.append_channel(c)
+        logging.info("{} channels selected from IPTV sources."
+                     .format(pl_new.length()))
 
-    logging.info("{} channels selected from IPTV sources."
-                 .format(pl_new.length()))
+        return pl_new.to_m3u_plus_playlist()
 
-    return pl_new.to_m3u_plus_playlist() if filtered \
-        else pl_add.to_m3u_plus_playlist()
+    else:
+
+        return pl_add.to_m3u_plus_playlist()
 
 
 def get_guide(
         *,
-        debug: bool
+        debug: bool = False
 ) -> str:
 
     logging_debug(debug=debug)
