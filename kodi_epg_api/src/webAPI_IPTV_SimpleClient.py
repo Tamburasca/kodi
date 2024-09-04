@@ -3,7 +3,6 @@
 
 from ipytv import playlist
 from ipytv.playlist import M3UPlaylist
-from ipytv.channel import IPTVAttr
 from ipytv.exceptions import MalformedPlaylistException
 import requests
 from xml.etree import ElementTree as ET
@@ -140,33 +139,16 @@ def get_iptv(
             new_a = channel_dict[c.name]
         except KeyError:
             continue
-        if new_a.get("disable", False):  # just skip, serve as placeholder
-            continue
-        # fetch value, otherwise keep old one
-        if new_a.get("name"):
-            c.name = new_a.get("name")
-        if new_a.get("extras"):
-            c.extras = new_a.get("extras")
-        if new_a.get("tvg-name"):
-            c.attributes["tvg-name"] = new_a.get("tvg-name")
-        if new_a.get("tvg-id"):
-            c.attributes["tvg-id"] = new_a.get("tvg-id")
-        if new_a.get("group-title"):
-            c.attributes["group-title"] = new_a.get("group-title")
-        if new_a.get("tvg-shift"):
-            c.attributes["tvg-shift"] = new_a.get("tvg-shift")
-        if new_a.get("tvg_chno"):
-            c.attributes["tvg_chno"] = new_a.get("tvg_chno")
-        if new_a.get("tvg-logo"):
-            c.attributes["tvg-logo"] = new_a.get("tvg-logo")
-        # c.name = new_a.get("name") or c.name
-        # c.extras = new_a.get("extras") or c.extras
-        # c.attributes["tvg-name"] = new_a.get("tvg-name") or c.attributes.get("tvg-name")
-        # c.attributes["tvg-id"] = new_a.get("tvg-id") or c.attributes.get("tvg-id")
-        # c.attributes["group-title"] = new_a.get("group-title") or c.attributes.get("group-title")
-        # c.attributes["tvg-shift"] = new_a.get("tvg-shift") or c.attributes.get("tvg-shift")
-        # c.attributes["tvg_chno"] = new_a.get("tvg_chno") or c.attributes.get("tvg_chno")
-        # c.attributes["tvg-logo"] = new_a.get("tvg-logo") or c.attributes.get("tvg-logo")
+        if new_a.get("disable", False): continue # just skip, serve as placeholder
+        # supersede tag if provided
+        if v := new_a.get("name"): c.name = v
+        if v := new_a.get("extras"): c.extras = v
+        if v := new_a.get("tvg-name"): c.attributes["tvg-name"] = v
+        if v := new_a.get("tvg-id"): c.attributes["tvg-id"] = v
+        if v := new_a.get("group-title"): c.attributes["group-title"] = v
+        if v := new_a.get("tvg-shift"): c.attributes["tvg-shift"] = v
+        if v := new_a.get("tvg_chno"): c.attributes["tvg_chno"] = v
+        if v := new_a.get("tvg-logo"): c.attributes["tvg-logo"] = v
 
         pl_new.append_channel(c)
 
@@ -224,8 +206,13 @@ def get_guide(
     )
 
 
-app = FastAPI()
+def main():
+    uvicorn.run(app,
+                host=API_HOST,
+                port=argparser.parse_args().api_port)
 
+
+app = FastAPI()
 
 @app.get(
     PATH_GUIDE,
@@ -313,6 +300,6 @@ argparser.add_argument(
 logging.info("Accepting requests on port {}"
              .format(argparser.parse_args().api_port))
 
-uvicorn.run(app,
-            host=API_HOST,
-            port=argparser.parse_args().api_port)
+
+if __name__ == "__main__":
+    main()
