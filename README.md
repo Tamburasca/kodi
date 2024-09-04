@@ -47,7 +47,8 @@ configured in [epg_corrected.json](https://github.com/Tamburasca/kodi/blob/63b89
 
    * http://localhost:3003/guide.xml
 
-Note: the EPG is cached after the javascript server is started, such it can
+Note: the EPG can be (optionally) cached after the javascript server 
+is started, such it can
 be utilized in case grabbing the site is still active.
 
 If you need to call the KODI Web API via, here a few examples:
