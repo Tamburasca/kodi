@@ -38,9 +38,8 @@ data from various sites, such as
    2. tvheute.at
    3. hd-plus.de
    4. tv.blue.ch
-to name a few. 
 
-   A revised EPG matches with the station names (see 
+   to name a few. A revised EPG matches with the station names (see 
 http://localhost:3003/iptv/read).
 The EPG provider is defined in [wrapper.sh](https://github.com/Tamburasca/kodi/blob/69187c86d9edc0eaa648434f28c417774f76dc01/kodi_epg_api/wrapper.sh) and the remapping is 
 configured in [epg_corrected.json](https://github.com/Tamburasca/kodi/blob/63b8967e152d43200b7169c17d566f78c9708959/kodi_epg_api/src/data/epg_corrected.json)
