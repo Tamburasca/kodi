@@ -8,7 +8,8 @@ in order to match channels with their program guide.
 1. Channel sources (filtered & unfiltered) for all sites that are 
 provided in .env (separated by comma). Returns a text/plain response to 
 serve a m3u file format. Filtering and reformating is defined in 
-[iptv_corrected.json](https://github.com/Tamburasca/kodi/blob/63b8967e152d43200b7169c17d566f78c9708959/kodi_epg_api/src/data/iptv_corrected.json). Following optional attributes may be provided per channel:
+[iptv_corrected.json](https://github.com/Tamburasca/kodi/blob/63b8967e152d43200b7169c17d566f78c9708959/kodi_epg_api/src/data/iptv_corrected.json). Following optional attributes may be provided per 
+channel:
    ```json
    {"station name": {
       "name": "xxx", 
@@ -18,6 +19,7 @@ serve a m3u file format. Filtering and reformating is defined in
       "group-title": "xxx",
       "tvg-shift": "xxx",
       "tvg_chno": "xxx",
+      "tvg-logo": "xxx",
       "disable": true
       }
     }
@@ -47,7 +49,7 @@ configured in [epg_corrected.json](https://github.com/Tamburasca/kodi/blob/63b89
 
    * http://localhost:3003/guide.xml
 
-Note: the EPG can be (optionally) cached after the javascript server 
+   Note: the EPG can be (optionally) cached after the javascript server 
 is started, such it can
 be utilized in case grabbing the site is still active.
 
