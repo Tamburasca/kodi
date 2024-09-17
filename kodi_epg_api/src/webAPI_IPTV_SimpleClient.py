@@ -2,10 +2,10 @@
 # coding: utf-8
 
 """
-Web Server providing a Rest API serving as a wrapper for the IPTV SimpleClient
-as IPTV and EPG sources in order to filter and rename attributes.
-This is required - for a few channels - in order to match channels with
-their program guide.
+An ASGI Web Server providing a Rest API serving as a wrapper for the
+IPTV SimpleClient as IPTV and EPG sources in order to filter and
+rename attributes. This is required - for a few channels - in order
+to match channels with their program guide.
 
 See also https://github.com/Tamburasca/kodi
 """
@@ -22,7 +22,7 @@ from fastapi.responses import Response, PlainTextResponse
 from fastapi.openapi.utils import get_openapi
 import uvicorn
 import logging
-from typing import Dict, Any
+from typing import Dict, List, Any
 
 __author__ = "Dr. Ralf Antonius Timmermann"
 __copyright__ = "Copyright (C) Ralf Antonius Timmermann"
@@ -70,6 +70,7 @@ def my_openapi_schema() -> Dict[str, Any]:
     """
     if app.openapi_schema:
         return app.openapi_schema
+
     openapi_schema = get_openapi(
         title="Kodi Web Rest API",
         version=__version__,
@@ -112,8 +113,8 @@ def get_iptv(
     logging_debug(debug=debug)
 
     pl_add, pl_new = M3UPlaylist(), M3UPlaylist()
-    channel_list = list()
-    tmp_dict = dict()
+    channel_list: List = []
+    tmp_dict: Dict = {}
 
     with open("data/iptv_corrected.json", "r") as f:
         channel_dict = json.load(f)
@@ -149,7 +150,7 @@ def get_iptv(
             except KeyError:
                 continue
             if new_a.get("disable", False): continue # just skip, serve as placeholder
-            # supersede tag if provided
+            # supersede attribute if provided
             if v := new_a.get("name"): c.name = v
             if v := new_a.get("extras"): c.extras = v
             if v := new_a.get("tvg-name"): c.attributes["tvg-name"] = v

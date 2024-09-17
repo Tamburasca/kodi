@@ -11,7 +11,7 @@ serve a m3u file format. Filtering and reformating is defined in
 [iptv_corrected.json](https://github.com/Tamburasca/kodi/blob/63b8967e152d43200b7169c17d566f78c9708959/kodi_epg_api/src/data/iptv_corrected.json). Following optional attributes may be provided per 
 channel:
    ```json
-   {"station name": {
+   {"<station name>": {
       "name": "xxx", 
       "extras": "xxx",
       "tvg-name": "xxx",
@@ -24,14 +24,14 @@ channel:
       }
     }
    ```
-   Provided endpoints:
+   Endpoints provided:
 
    * http://localhost:3003/iptv/read
 
    * http://localhost:3003/iptv/unfiltered
 
-2. The Electronic program guide (EPG), utilizes the javascript server - running 
-in the docker container - as provided in https://github.com/iptv-org/epg to pull 
+2. The Electronic Program Guide (EPG), utilizes a javascript server - running 
+in the docker container - as presented in https://github.com/iptv-org/epg to pull 
 data from various sites, such as
 
    1. chaines-tv.orange.fr
@@ -44,12 +44,12 @@ http://localhost:3003/iptv/read).
 The EPG provider is defined in [wrapper.sh](https://github.com/Tamburasca/kodi/blob/69187c86d9edc0eaa648434f28c417774f76dc01/kodi_epg_api/wrapper.sh) and the remapping is 
 configured in [epg_corrected.json](https://github.com/Tamburasca/kodi/blob/63b8967e152d43200b7169c17d566f78c9708959/kodi_epg_api/src/data/epg_corrected.json)
 
-   Provided endpoint:
+   Endpoint provided:
 
    * http://localhost:3003/guide.xml
 
    Note: the EPG can be (optionally) cached after the javascript server 
-is started, such it can
+is started, such that it can
 be utilized in case grabbing the site is still active.
 
 If you need to call the KODI Web API via, here a few examples:
@@ -78,7 +78,7 @@ the following menu items:
     URL for XMLTV: http://localhost:3003/guide.xml
 
 
-Since the docker container may not yet be up when the playlist is loaded 
+Since the docker container may not yet be up when the playlist is loaded, 
 KODI's start needs to be delayed. 
 
     systemctl edit kodi-autostart.service
