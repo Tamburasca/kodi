@@ -14,25 +14,27 @@ RUN apt-get update; \
     apt-get -y upgrade
 RUN apt-get -y install git
 RUN apt-get -y install curl
+
 # see also https://linuxize.com/post/how-to-install-node-js-on-ubuntu-22-04/
+ARG NODE_MAJOR=24
 RUN apt-get install -y ca-certificates libatomic1 gnupg; \
     mkdir -p /etc/apt/keyrings; \
     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
      | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg; \
-    NODE_MAJOR=21; \
     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] \
     https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" \
      > /etc/apt/sources.list.d/nodesource.list; \
     apt-get -y update; \
-    apt-get -y install nodejs; \
-    npm update --global npm
+    apt-get -y install nodejs;
+#RUN npm install libxmljs2; \
+#    npm update --global npm
 RUN apt-get -y install python3-pip; \
     pip install -r requirements.txt; \
     rm -f requirements.txt
 
 WORKDIR /iptv/
-COPY wrapper.sh .
-RUN ["chmod", "+x", "wrapper.sh"]
+COPY wrapper_v24.sh .
+RUN ["chmod", "+x", "wrapper_v24.sh"]
 RUN git clone --depth 1 -b master https://github.com/iptv-org/epg.git
 
 WORKDIR /iptv/epg/
@@ -41,9 +43,13 @@ ARG MAX_OLD_SPACE_SIZE=1024
 ENV NODE_OPTIONS="--max_old_space_size=${MAX_OLD_SPACE_SIZE}"
 RUN npm install
 
+ARG IPTV_URL
+ARG EPG_CACHED
+ARG DEBUG
+
 ENV IPTV_URL=$IPTV_URL
 ENV EPG_CACHED=$EPG_CACHED
 ENV DEBUG=$DEBUG
 
 WORKDIR /iptv/
-CMD ./wrapper.sh
+CMD ["sh", "wrapper_v24.sh"]

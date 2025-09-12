@@ -6,6 +6,15 @@
 ### Deprecated
 ### Removed
 ### Security
+## 0.3.0 (2925-09-12)
+### Added
+### Changed
+- upgraded for NodeJS 24
+### Fixed
+- EPG is read from local file, http://localhost:3000/guide.xml seems not to work
+### Deprecated
+### Removed
+### Security
 ## 0.2.1 (2024-07-17)
 ### Added
 ### Changed

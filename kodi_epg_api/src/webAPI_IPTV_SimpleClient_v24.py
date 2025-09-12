@@ -13,8 +13,7 @@ See also https://github.com/Tamburasca/kodi
 from ipytv import playlist
 from ipytv.playlist import M3UPlaylist
 from ipytv.exceptions import MalformedPlaylistException
-import requests
-from xml.etree import ElementTree as ET
+from xml.etree import ElementTree as Et
 import json
 import argparse
 from fastapi import FastAPI, HTTPException, status
@@ -22,13 +21,13 @@ from fastapi.responses import Response, PlainTextResponse
 from fastapi.openapi.utils import get_openapi
 import uvicorn
 import logging
-from typing import Dict, List, Any
+from typing import Any
 
 __author__ = "Dr. Ralf Antonius Timmermann"
 __copyright__ = "Copyright (C) Ralf Antonius Timmermann"
 __credits__ = ""
 __license__ = "BSD 3-Clause"
-__version__ = "0.2.2"
+__version__ = "0.3.0"
 __maintainer__ = "Dr. Ralf Antonius Timmermann"
 __email__ = "rtimmermann@gmx.de"
 __status__ = "Prod"
@@ -41,7 +40,7 @@ logging.basicConfig(format=myformat,
 # suppress debug & info logs from ipytv module
 logging.getLogger("ipytv").setLevel(logging.WARNING)
 
-URL_EPG = "http://localhost:3000/guide.xml"  # from inside docker container
+# URL_EPG = "http://localhost:3000/guide.xml"  # Node.js v21
 API_HOST = '0.0.0.0'
 API_PORT = 3003
 PATH_GUIDE = "/guide.xml"
@@ -62,7 +61,7 @@ class MyException(Exception):
         self.detail: str = detail
 
 
-def my_openapi_schema() -> Dict[str, Any]:
+def my_openapi_schema() -> dict[str, Any]:
     """
     see blog, e.g.
     https://www.linode.com/docs/guides/documenting-a-fastapi-app-with-openapi/
@@ -113,8 +112,8 @@ def get_iptv(
     logging_debug(debug=debug)
 
     pl_add, pl_new = M3UPlaylist(), M3UPlaylist()
-    channel_list: List = []
-    tmp_dict: Dict = {}
+    channel_list = list()
+    tmp_dict = dict()
 
     with open("data/iptv_corrected.json", "r") as f:
         channel_dict = json.load(f)
@@ -181,22 +180,27 @@ def get_guide(
 
     with open("data/epg_corrected.json", "r") as f:
         channel_dict = json.load(f)
-
+# Node.js v21
+#    try:
+#        response = requests.get(URL_EPG)
+#        response.raise_for_status()
+#        tree = Et.fromstring(response.content)
+#        logging.debug("Pulled EPG from internet.")
+#    except (
+#            requests.exceptions.HTTPError,
+#            requests.exceptions.ConnectionError,
+#            ConnectionRefusedError
+#    ):
     try:
-        response = requests.get(URL_EPG)
-        response.raise_for_status()
-        tree = ET.fromstring(response.content)
-        logging.debug("Pulled EPG from internet.")
-    except (
-            requests.exceptions.HTTPError,
-            requests.exceptions.ConnectionError,
-            ConnectionRefusedError
-    ):
+        with open(f"/iptv/epg{PATH_GUIDE}", "r") as g:
+            tree = Et.fromstring(g.read())
+            logging.debug("Pulled EPG from internet.")
+    except (IOError, Et.ParseError):
         try:
             if not argparser.parse_args().epg_cached:
                 raise IOError
             with open("data/epg_cached.xml", "r") as f1:
-                tree = ET.fromstring(f1.read())
+                tree = Et.fromstring(f1.read())
             logging.debug("Pulled EPG from cache.")
         except IOError:
             raise MyException(
@@ -211,7 +215,7 @@ def get_guide(
             except KeyError:
                 pass
 
-    return ET.tostring(
+    return Et.tostring(
         tree,
         encoding="unicode",
         xml_declaration=True,
