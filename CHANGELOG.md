@@ -14,6 +14,7 @@
 - EPG is read from local file, http://localhost:3000/guide.xml seems not to work
 ### Deprecated
 ### Removed
+- option epg_cached
 ### Security
 ## 0.2.1 (2024-07-17)
 ### Added

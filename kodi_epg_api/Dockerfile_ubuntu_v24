@@ -1,8 +1,6 @@
 # update EPG via $ docker exec -w <working dir> <container id | name> npm run grab -- --site=<web site>, e.g.
 #docker exec -w /iptv/epg/scripts/commands/epg/ kodi_all npm run grab -- --site=chaines-tv.orange.fr
-# via crontab -e
-#0 9,12,15,18 * * * docker exec -w /iptv/epg/scripts/commands/epg/ kodi_all npm run grab -- --site=chaines-tv.orange.fr
-
+# via crontab -e 0 9,12,15,18 * * * docker exec -w /iptv/epg/scripts/commands/epg/ kodi_all npm run grab --- --site=tv.blue.ch --maxConnections=3
 FROM ubuntu:22.04
 
 # iptv service

@@ -196,17 +196,10 @@ def get_guide(
             tree = Et.fromstring(g.read())
             logging.debug("Pulled EPG from internet.")
     except (IOError, Et.ParseError):
-        try:
-            if not argparser.parse_args().epg_cached:
-                raise IOError
-            with open("data/epg_cached.xml", "r") as f1:
-                tree = Et.fromstring(f1.read())
-            logging.debug("Pulled EPG from cache.")
-        except IOError:
-            raise MyException(
-                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail="EPG is not cached."
-            )
+        raise MyException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="EPG is not available or error in xml."
+        )
 
     for channel in tree.findall('channel'):
         for display_name in channel.findall("display-name"):
@@ -302,11 +295,6 @@ argparser.add_argument(
     required=False,
     type=str,
     help="URL of IPTV providers (separated by comma)"
-)
-argparser.add_argument(
-    '--epg_cached',
-    help="Read from cached EPG",
-    action="store_true"
 )
 argparser.add_argument(
     '--debug',
