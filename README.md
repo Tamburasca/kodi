@@ -2,13 +2,14 @@
 
 serves as a wrapper for the IPTV SimpleClient 
 as IPTV and EPG sources in order to filter and 
-rename attributes. This is required - for a few channels - 
+rename attributes. This might be required - for a few channels - 
 in order to match channels with their program guide.
 
 1. Channel sources (filtered & unfiltered) for all sites that are 
 provided in .env (separated by comma). Returns a text/plain response to 
 serve a m3u file format. Filtering and reformating is defined in 
-[iptv_corrected.json](https://github.com/Tamburasca/kodi/blob/63b8967e152d43200b7169c17d566f78c9708959/kodi_epg_api/src/data/iptv_corrected.json). Following optional attributes may be provided per 
+[iptv_corrected.json](https://github.com/Tamburasca/kodi/blob/63b8967e152d43200b7169c17d566f78c9708959/kodi_epg_api/src/data/iptv_corrected.json). The attibute "tvg-name" is used to match the 
+channel name with the EPG. Following optional attributes may be provided per 
 channel:
 
    ```json
@@ -43,7 +44,16 @@ data from various sites, such as
    to name a few. A revised EPG matches with the station names (see 
 http://localhost:3003/iptv/read).
 The EPG provider is defined in [wrapper.sh](https://github.com/Tamburasca/kodi/blob/69187c86d9edc0eaa648434f28c417774f76dc01/kodi_epg_api/wrapper.sh) and the remapping is 
-configured in [epg_corrected.json](https://github.com/Tamburasca/kodi/blob/63b8967e152d43200b7169c17d566f78c9708959/kodi_epg_api/src/data/epg_corrected.json)
+configured in [epg_corrected.json](https://github.com/Tamburasca/kodi/blob/63b8967e152d43200b7169c17d566f78c9708959/kodi_epg_api/src/data/epg_corrected.json). The display-name - in the xml - 
+needs to be renamed, such that it matches the "tvg-name" attribute 
+in the IPTV source.
+
+    ```json
+    {
+    "<display-name>": "<tvg-name>",
+    "<display-name1>": "<tvg-name1>"
+    }
+    ```
 
    Endpoint provided:
 
