@@ -14,7 +14,8 @@ via http://localhost:3003/original/guide.xml for debugging purposes
 ### Fixed
 ### Deprecated
 ### Removed
-### Security## 0.3.0 (2925-09-12)
+### Security
+## 0.3.0 (2925-09-12)
 ### Added
 ### Changed
 - upgraded for NodeJS 24
