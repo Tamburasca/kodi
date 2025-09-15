@@ -1,3 +1,5 @@
+#!/bin/sh
+
 if [ "$DEBUG" = "true" ] ; then debug="--debug" ; fi
 
 # Start the REST APIs

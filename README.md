@@ -10,6 +10,7 @@ provided in .env (separated by comma). Returns a text/plain response to
 serve a m3u file format. Filtering and reformating is defined in 
 [iptv_corrected.json](https://github.com/Tamburasca/kodi/blob/63b8967e152d43200b7169c17d566f78c9708959/kodi_epg_api/src/data/iptv_corrected.json). Following optional attributes may be provided per 
 channel:
+
    ```json
    {"<station name>": {
       "name": "xxx", 
@@ -47,10 +48,8 @@ configured in [epg_corrected.json](https://github.com/Tamburasca/kodi/blob/63b89
    Endpoint provided:
 
    * http://localhost:3003/guide.xml
-
-   Note: the EPG can be (optionally) cached after the javascript server 
-is started, such that it can
-be utilized in case grabbing the site is still active.
+   
+   * http://localhost:3003/original/guide.json (as downloaded from the site)
 
 If you need to call the KODI Web API via, here a few examples:
     

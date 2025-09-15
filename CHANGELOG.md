@@ -6,7 +6,15 @@
 ### Deprecated
 ### Removed
 ### Security
-## 0.3.0 (2925-09-12)
+## 0.4.0 (2025-09-15)
+### Added
+- a new method to read the original EPG as downloaded from the site 
+via http://localhost:3003/original/guide.xml for debugging purposes
+### Changed
+### Fixed
+### Deprecated
+### Removed
+### Security## 0.3.0 (2925-09-12)
 ### Added
 ### Changed
 - upgraded for NodeJS 24

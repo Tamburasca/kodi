@@ -17,7 +17,6 @@
   "Welt der Wunder TV (576p)": {
     "name": "Welt der Wunder TV"
   },
-
   "Red Bull TV": {},
   "KiKA": {},
   "WDR HD": {},
@@ -26,22 +25,52 @@
     "disable": true
   },
   "WDR Münsterland HD": {},
-  "SWR Baden-Württemberg HD": {},
-  "SWR Rheinland-Pfalz HD": {},
-  "NDR Niedersachsen HD": {},
-  "NDR Schleswig-Holstein HD": {},
-  "NDR Mecklenburg-Vorpommern HD": {},
-  "NDR Hamburg HD": {},
+  "SWR Baden-Württemberg HD": {
+    "tvg-name": "SWR HD"
+  },
+  "SWR Rheinland-Pfalz HD": {
+    "tvg-name": "SWR HD"
+  },
+  "NDR Niedersachsen HD": {
+    "tvg-name": "NDR HD"
+  },
+  "NDR Schleswig-Holstein HD": {
+    "tvg-name": "NDR HD"
+  },
+  "NDR Mecklenburg-Vorpommern HD": {
+    "tvg-name": "NDR HD"
+  },
+  "NDR Hamburg HD": {
+    "tvg-name": "NDR HD"
+  },
   "Radio Bremen TV HD": {},
-  "BR Fernsehen Nord HD": {},
-  "BR Fernsehen Süd HD": {},
-  "MDR Sachsen HD": {},
-  "MDR Sachsen-Anhalt HD": {},
-  "MDR Thüringen HD": {},
-  "hr-fernsehen": {},
-  "rbb Berlin HD": {},
-  "rbb Brandenburg HD": {},
-  "SR Fernsehen HD": {},
+  "BR Fernsehen Nord HD": {
+    "tvg-name": "BR HD"
+  },
+  "BR Fernsehen Süd HD": {
+    "tvg-name": "BR HD"
+  },
+  "MDR Sachsen HD": {
+    "tvg-name": "MDR HD"
+  },
+  "MDR Sachsen-Anhalt HD": {
+    "tvg-name": "MDR HD"
+  },
+  "MDR Thüringen HD": {
+    "tvg-name": "MDR HD"
+  },
+  "hr-fernsehen": {
+    "tvg-name": "HR HD"
+  },
+  "rbb Berlin HD": {
+    "tvg-name": "RBB HD"
+  },
+  "rbb Brandenburg HD": {
+    "tvg-name": "RBB HD"
+  },
+  "SR Fernsehen HD": {
+    "tvg-name": "SR HD"
+  },
   "Deutsche Welle+": {},
   "ARTE Event 1": {},
   "ARTE Event 2": {},

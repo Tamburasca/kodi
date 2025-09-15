@@ -10,18 +10,20 @@ to match channels with their program guide.
 See also https://github.com/Tamburasca/kodi
 """
 
-from ipytv import playlist
-from ipytv.playlist import M3UPlaylist
-from ipytv.exceptions import MalformedPlaylistException
-from xml.etree import ElementTree as Et
-import json
 import argparse
-from fastapi import FastAPI, HTTPException, status
-from fastapi.responses import Response, PlainTextResponse
-from fastapi.openapi.utils import get_openapi
-import uvicorn
+import json
 import logging
 from typing import Any
+from xml.etree import ElementTree as Et
+
+# import requests  # Node.js v21
+import uvicorn
+from fastapi import FastAPI, HTTPException, status
+from fastapi.openapi.utils import get_openapi
+from fastapi.responses import Response, PlainTextResponse
+from ipytv import playlist
+from ipytv.exceptions import MalformedPlaylistException
+from ipytv.playlist import M3UPlaylist
 
 __author__ = "Dr. Ralf Antonius Timmermann"
 __copyright__ = "Copyright (C) Ralf Antonius Timmermann"
@@ -77,13 +79,13 @@ def my_openapi_schema() -> dict[str, Any]:
         routes=app.routes
     )
     openapi_schema["paths"][PATH_GUIDE]["get"]["responses"]["200"] = {
-            "description": "Return an EPG in xml format.",
-            "content": {
-                "application/xml": {
-                    "schema": {}
-                }
+        "description": "Return an EPG in xml format.",
+        "content": {
+            "application/xml": {
+                "schema": {}
             }
         }
+    }
     app.openapi_schema = openapi_schema
 
     return app.openapi_schema
@@ -93,6 +95,11 @@ def logging_debug(
         *,
         debug: bool = False
 ) -> None:
+    """
+    Set logging to debug level
+    :param debug:
+    :return:
+    """
     if debug:
         logging.getLogger().setLevel(logging.DEBUG)
         for loggers, log_obj in logging.Logger.manager.loggerDict.items():
@@ -105,12 +112,17 @@ def logging_debug(
 def get_iptv(
         *,
         urls: str,
-        filtered: bool,
-        debug: bool = False
+        filtered: bool
 ) -> str:
-
-    logging_debug(debug=debug)
-
+    """
+    read IPTV source(s)
+    return playlist in M3U format
+    1. if filtered is True, filter and correct channel names
+    2. if filtered is False, return unfiltered list of channels
+    :param urls:
+    :param filtered:
+    :return:
+    """
     pl_add, pl_new = M3UPlaylist(), M3UPlaylist()
     channel_list = list()
     tmp_dict = dict()
@@ -148,7 +160,8 @@ def get_iptv(
                 new_a = channel_dict[c.name]
             except KeyError:
                 continue
-            if new_a.get("disable", False): continue # just skip, serve as placeholder
+            if new_a.get("disable",
+                         False): continue  # just skip, serve as placeholder
             # supersede attribute if provided
             if v := new_a.get("name"): c.name = v
             if v := new_a.get("extras"): c.extras = v
@@ -172,41 +185,41 @@ def get_iptv(
 
 
 def get_guide(
-        *,
-        debug: bool = False
+        original: bool = False
 ) -> str:
+    """
+    read EPG source and correct channel names
+    return EPG in xml format
+    :param original: if True, do not correct channel names
+    :return:
+    """
 
-    logging_debug(debug=debug)
-
-    with open("data/epg_corrected.json", "r") as f:
-        channel_dict = json.load(f)
-# Node.js v21
-#    try:
-#        response = requests.get(URL_EPG)
-#        response.raise_for_status()
-#        tree = Et.fromstring(response.content)
-#        logging.debug("Pulled EPG from internet.")
-#    except (
-#            requests.exceptions.HTTPError,
-#            requests.exceptions.ConnectionError,
-#            ConnectionRefusedError
-#    ):
+    # Node.js v21 restAPI method /guide.xml seems not available
+    #    try:
+    #        response = requests.get(URL_EPG)
+    #        response.raise_for_status()
+    #        tree = Et.fromstring(response.content)
+    #        logging.debug("Pulled EPG from internet.")
+    #    except (
+    #            requests.exceptions.HTTPError,
+    #            requests.exceptions.ConnectionError,
+    #            ConnectionRefusedError
+    #    ):
     try:
         with open(f"/iptv/epg{PATH_GUIDE}", "r") as g:
             tree = Et.fromstring(g.read())
-            logging.debug("Pulled EPG from internet.")
     except (IOError, Et.ParseError):
         raise MyException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="EPG is not available or error in xml."
+            detail="EPG is not available or error in xml parser."
         )
-
-    for channel in tree.findall('channel'):
-        for display_name in channel.findall("display-name"):
-            try:
-                display_name.text = channel_dict[display_name.text]  # remap
-            except KeyError:
-                pass
+    if not original:
+        with open("data/epg_corrected.json", "r") as f:
+            channel_dict = json.load(f)
+        for channel in tree.findall('channel'):
+            for display_name in channel.findall("display-name"):
+                if v := channel_dict.get(display_name.text):
+                    display_name.text = v
 
     return Et.tostring(
         tree,
@@ -217,12 +230,35 @@ def get_guide(
 
 
 def main():
+    """
+    Start the ASGI web server
+    :return:
+    """
     uvicorn.run(app,
                 host=API_HOST,
                 port=argparser.parse_args().api_port)
 
 
 app = FastAPI()
+
+
+@app.get(
+    "/original" + PATH_GUIDE,
+    summary="Outputs the original EPG response in xml format"
+)
+async def original_epg() -> Response:
+    try:
+        return Response(
+            status_code=status.HTTP_200_OK,
+            content=get_guide(original=True),
+            media_type="application/xml",
+        )
+    except MyException as e:
+        raise HTTPException(
+            status_code=e.status_code,
+            detail="Resource Unavailable: {}".format(e)
+        )
+
 
 @app.get(
     PATH_GUIDE,
@@ -232,7 +268,7 @@ async def epg() -> Response:
     try:
         return Response(
             status_code=status.HTTP_200_OK,
-            content=get_guide(debug=argparser.parse_args().debug),
+            content=get_guide(original=False),
             media_type="application/xml",
         )
     except MyException as e:
@@ -251,8 +287,7 @@ async def read() -> PlainTextResponse:
     try:
         return get_iptv(
             urls=argparser.parse_args().iptv_url,
-            filtered=True,
-            debug=argparser.parse_args().debug
+            filtered=True
         )
     except MyException as e:
         raise HTTPException(
@@ -269,13 +304,13 @@ async def unfiltered() -> PlainTextResponse:
     try:
         return get_iptv(
             urls=argparser.parse_args().iptv_url,
-            filtered=False,
-            debug=argparser.parse_args().debug
+            filtered=False
         )
     except MyException as e:
         raise HTTPException(
             status_code=e.status_code,
             detail=e.detail)
+
 
 # custom schema
 app.openapi = my_openapi_schema
@@ -302,9 +337,9 @@ argparser.add_argument(
     action="store_true"
 )
 
+logging_debug(debug=argparser.parse_args().debug)
 logging.info("Accepting requests on port {}"
              .format(argparser.parse_args().api_port))
-
 
 if __name__ == "__main__":
     main()
