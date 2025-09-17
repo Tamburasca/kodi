@@ -13,6 +13,7 @@ npx serve &
 # Rest API throws an exception if not at least one site is loaded
 npm run grab --- --site=tv.blue.ch --days=3 --maxConnections=3 \
 --output=/iptv/iptv/src/data/guide.xml
+chmod 666 /iptv/iptv/src/data/guide.xml || true
 
 # Wait for any process to exit
 wait
