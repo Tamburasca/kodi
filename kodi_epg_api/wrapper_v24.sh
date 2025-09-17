@@ -11,7 +11,8 @@ cd /iptv/epg/scripts/commands/epg/ || exit
 # start the JavaScript server, EPG available at port=3000
 npx serve &
 # Rest API throws an exception if not at least one site is loaded
-npm run grab --- --site=tv.blue.ch --days=3 --maxConnections=3
+npm run grab --- --site=tv.blue.ch --days=3 --maxConnections=3 \
+--output=/iptv/iptv/src/data/guide.xml
 
 # Wait for any process to exit
 wait

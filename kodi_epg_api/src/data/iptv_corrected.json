@@ -17,7 +17,9 @@
   "Welt der Wunder TV (576p)": {
     "name": "Welt der Wunder TV"
   },
-  "Red Bull TV": {},
+  "Red Bull TV": {
+    "disable": true
+  },
   "KiKA": {},
   "WDR HD": {},
   "WDR Bonn HD": {},
@@ -90,7 +92,10 @@
   "Bloomberg TV": {
     "name": "Bloomberg TV Europe"
   },
-  "CNN International Europe": {},
+  "CNN International Europe": {
+    "disable": true
+  },
+  "CNN International": {},
   "Sky News Extra": {},
   "ARTE HD (FR)": {},
   "Rai News 24": {},

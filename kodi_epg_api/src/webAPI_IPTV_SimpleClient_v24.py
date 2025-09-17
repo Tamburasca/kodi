@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# coding: utf-8
 
 """
 An ASGI Web Server providing a Rest API serving as a wrapper for the
@@ -113,11 +112,12 @@ def get_iptv(
         *,
         urls: str,
         filtered: bool
-) -> str:
+) -> M3UPlaylist:
     """
     read IPTV source(s)
     return playlist in M3U format
-    1. if filtered is True, filter and correct channel names
+    1. if filtered is True, filter and correct channel attributes according to
+       iptv_corrected.json
     2. if filtered is False, return unfiltered list of channels
     :param urls:
     :param filtered:
@@ -156,12 +156,9 @@ def get_iptv(
     if filtered:
         for item in all_channels:
             c = item.copy()
-            try:
-                new_a = channel_dict[c.name]
-            except KeyError:
-                continue
-            if new_a.get("disable",
-                         False): continue  # just skip, serve as placeholder
+            try: new_a = channel_dict[c.name]
+            except KeyError: continue
+            if new_a.get("disable"): continue  # just skip, serve as placeholder
             # supersede attribute if provided
             if v := new_a.get("name"): c.name = v
             if v := new_a.get("extras"): c.extras = v
@@ -171,16 +168,11 @@ def get_iptv(
             if v := new_a.get("tvg-shift"): c.attributes["tvg-shift"] = v
             if v := new_a.get("tvg_chno"): c.attributes["tvg_chno"] = v
             if v := new_a.get("tvg-logo"): c.attributes["tvg-logo"] = v
-
             pl_new.append_channel(c)
-
         logging.info("{} channels selected from IPTV sources."
                      .format(pl_new.length()))
-
         return pl_new.to_m3u_plus_playlist()
-
     else:
-
         return pl_add.to_m3u_plus_playlist()
 
 
@@ -206,7 +198,7 @@ def get_guide(
     #            ConnectionRefusedError
     #    ):
     try:
-        with open(f"/iptv/epg{PATH_GUIDE}", "r") as g:
+        with open(f"/iptv/iptv/src/data{PATH_GUIDE}", "r") as g:
             tree = Et.fromstring(g.read())
     except (IOError, Et.ParseError):
         raise MyException(
