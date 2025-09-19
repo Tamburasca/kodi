@@ -51,15 +51,15 @@ class MyException(Exception):
     def __init__(
             self,
             *,
-            status_code,
-            detail
+            status_code: int,
+            detail: str,
+            note: str = None
     ):
         super().__init__(
             status_code,
             detail
         )
-        self.status_code: int = status_code
-        self.detail: str = detail
+        if note: self.add_note(note)
 
 
 def my_openapi_schema() -> dict[str, Any]:
