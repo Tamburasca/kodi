@@ -55,9 +55,11 @@ class MyException(Exception):
             detail: str,
             note: str = None
     ):
+        self.status_code = status_code
+        self.detail = detail
         super().__init__(
-            status_code,
-            detail
+            self.status_code,
+            self.detail
         )
         if note: self.add_note(note)
 
